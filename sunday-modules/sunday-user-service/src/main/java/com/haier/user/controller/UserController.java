@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     RedisService redisService;
-
-    @GetMapping("get")
-    public User get(@RequestParam String key) {
-        return redisService.get(key);
-    }
-
-    @GetMapping("put")
-    public String put(@RequestParam String key) {
-        User c = new User();
-        c.setAge(12);
-        c.setName("张三");
-        redisService.put(key, c);
-        return "";
-    }
+//
+//    @GetMapping("get")
+//    public User get(@RequestParam String key) {
+//        return redisService.get(key);
+//    }
+//
+//    @GetMapping("put")
+//    public String put(@RequestParam String key) {
+//        User c = new User();
+//        c.setAge(12);
+//        c.setName("张三");
+//        redisService.put(key, c);
+//        return "";
+//    }
 }
