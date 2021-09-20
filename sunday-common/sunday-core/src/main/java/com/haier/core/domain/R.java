@@ -1,4 +1,4 @@
-package com.haier.common.domain;
+package com.haier.core.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +36,10 @@ public class R<T> implements Serializable {
 
     public static <T> R<T> error(String msg) {
         return result(500, msg, null);
+    }
+
+    public static <T> R<T> error(Integer code, String msg) {
+        return result(code, msg, null);
     }
 
     public static <T> R<T> result(Integer code, String msg, T data) {

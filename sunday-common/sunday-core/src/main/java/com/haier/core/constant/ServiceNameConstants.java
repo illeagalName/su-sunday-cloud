@@ -1,4 +1,4 @@
-package com.haier.common.constant;
+package com.haier.core.constant;
 
 public class ServiceNameConstants {
     /**

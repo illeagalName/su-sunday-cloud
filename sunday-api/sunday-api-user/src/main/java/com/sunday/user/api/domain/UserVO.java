@@ -1,16 +1,14 @@
-package com.haier.user.domain;
+package com.sunday.user.api.domain;
 
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
  * @Author Ami
- * @Date 2021/9/20 19:53
+ * @Date 2021/9/20 20:38
  */
 @Data
-public class User {
+public class UserVO {
     private Long userId;
     /**
      * 登录名称
@@ -47,16 +45,27 @@ public class User {
      * 加盐
      */
     private String salt;
+
+
+    // 额外信息
+
     /**
-     * 账号状态，
-     * 0 正常
-     * 1 停用
+     * 用户唯一标识
      */
-    private Integer status;
+    private String token;
+
     /**
-     * 删除状态
-     * 0 未删除
-     * 1  删除
+     * 登录时间
      */
-    private Integer isDelete;
+    private Long loginTime;
+
+    /**
+     * 过期时间
+     */
+    private Long expireTime;
+
+    /**
+     * 登录IP地址
+     */
+    private String ipaddr;
 }

@@ -1,14 +1,12 @@
 package com.haier.user.controller;
 
-import com.haier.redis.service.RedisService;
-import com.haier.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.haier.core.domain.R;
+import com.haier.user.service.UserService;
+import com.sunday.user.api.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,20 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("user")
 public class UserController {
+
     @Autowired
-    RedisService redisService;
-//
-//    @GetMapping("get")
-//    public User get(@RequestParam String key) {
-//        return redisService.get(key);
-//    }
-//
-//    @GetMapping("put")
-//    public String put(@RequestParam String key) {
-//        User c = new User();
-//        c.setAge(12);
-//        c.setName("张三");
-//        redisService.put(key, c);
-//        return "";
-//    }
+    UserService userService;
+
+    @GetMapping("info/{username}")
+    public R<UserVO> getUserInfo(@PathVariable("username") String username) {
+        return R.success(userService.selectUserByUserName(username));
+    }
 }

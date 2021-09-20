@@ -64,7 +64,8 @@
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>
-            <artifactId>sunday-core</artifactId>
+            <artifactId>sunday-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>
