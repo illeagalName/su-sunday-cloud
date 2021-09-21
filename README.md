@@ -8,3 +8,5 @@
 ``https://www.bilibili.com/video/BV1Zy4y1K7SH``
 
 保姆级的讲解，我感觉我又行了
+看了三分之二了，除了css外，其他的掌握的还不错
+这是往我嘴里喂Vue啊，animate.css 玩了很久，挺嗨的这个动画
