@@ -1,0 +1,31 @@
+# Tomcat
+server: 
+  port: 20001
+
+# Spring
+spring: 
+  application:
+    # 应用名称
+    name: auth-service
+  profiles:
+    # 环境配置
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        #服务注册地址
+        server-addr: 127.0.0.1:8848
+        namespace: 8564ddea-2ed6-49a4-9fb9-ec10dfae94e9
+        register-enabled: true
+      config:
+        #配置中心地址
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+        namespace: 8564ddea-2ed6-49a4-9fb9-ec10dfae94e9
+        enabled: true
+        # 共享配置
+        #        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        shared-configs[0]:
+          data-id: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

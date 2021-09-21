@@ -9,7 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <modules>
+        <module>sunday-api-user</module>
+        <module>sunday-api-auth</module>
+    </modules>
+
     <artifactId>sunday-api</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

@@ -1,7 +1,10 @@
-package com.sunday.user.api;
+package com.haier.user.api;
 
+import com.haier.core.constant.ServiceNameConstants;
 import com.haier.core.domain.R;
-import com.sunday.user.api.domain.UserVO;
+import com.haier.user.api.factory.UserFallbackFactory;
+import com.haier.user.api.domain.UserVO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Author Ami
  * @Date 2021/9/20 20:35
  */
+@FeignClient(contextId = "remoteUserService", value = ServiceNameConstants.USER_SERVICE, fallbackFactory = UserFallbackFactory.class)
 public interface RemoteUserService {
     /**
      * 查询用户信息

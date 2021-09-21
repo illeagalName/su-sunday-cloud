@@ -1,7 +1,8 @@
-package com.sunday.user.api.factory;
+package com.haier.user.api.factory;
 
 import com.haier.core.domain.R;
-import com.sunday.user.api.RemoteUserService;
+import com.haier.user.api.RemoteUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
 /**
@@ -9,9 +10,12 @@ import org.springframework.cloud.openfeign.FallbackFactory;
  * @Author Ami
  * @Date 2021/9/20 20:48
  */
+@Slf4j
 public class UserFallbackFactory implements FallbackFactory<RemoteUserService> {
+
     @Override
     public RemoteUserService create(Throwable cause) {
-        return username -> R.error("获取用户信息失败" + cause.getMessage());
+        log.error("获取用户信息失败: {}", cause.getMessage());
+        return username -> R.error("获取用户信息失败");
     }
 }

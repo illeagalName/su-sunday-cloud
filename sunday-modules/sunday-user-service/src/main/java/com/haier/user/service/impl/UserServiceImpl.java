@@ -4,7 +4,7 @@ import com.haier.core.util.AssertUtils;
 import com.haier.user.dao.UserMapper;
 import com.haier.user.domain.User;
 import com.haier.user.service.UserService;
-import com.sunday.user.api.domain.UserVO;
+import com.haier.user.api.domain.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

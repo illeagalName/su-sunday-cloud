@@ -1,4 +1,4 @@
-package com.sunday.user.api.domain;
+package com.haier.auth.api.domain;
 
 import lombok.Data;
 
