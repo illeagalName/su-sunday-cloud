@@ -1,9 +1,9 @@
-package com.haier.user.api;
+package com.haier.api.user;
 
+import com.haier.api.user.factory.UserFallbackFactory;
 import com.haier.core.constant.ServiceNameConstants;
 import com.haier.core.domain.R;
-import com.haier.user.api.factory.UserFallbackFactory;
-import com.haier.user.api.domain.UserVO;
+import com.haier.api.user.domain.UserVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

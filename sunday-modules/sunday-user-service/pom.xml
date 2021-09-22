@@ -64,7 +64,11 @@
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>
-            <artifactId>sunday-security</artifactId>
+            <artifactId>sunday-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-api-user</artifactId>
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>

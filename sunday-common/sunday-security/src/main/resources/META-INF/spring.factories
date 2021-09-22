@@ -1,6 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.haier.security.handler.GlobalExceptionHandler,\
-com.haier.security.config.ApplicationConfig,\
-com.haier.security.config.FeignConfig
-
-  

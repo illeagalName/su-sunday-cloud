@@ -2,7 +2,7 @@ package com.haier.user.controller;
 
 import com.haier.core.domain.R;
 import com.haier.user.service.UserService;
-import com.haier.user.api.domain.UserVO;
+import com.haier.api.user.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

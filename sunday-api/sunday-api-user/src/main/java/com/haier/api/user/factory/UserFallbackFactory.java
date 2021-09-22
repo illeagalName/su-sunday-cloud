@@ -1,7 +1,7 @@
-package com.haier.user.api.factory;
+package com.haier.api.user.factory;
 
 import com.haier.core.domain.R;
-import com.haier.user.api.RemoteUserService;
+import com.haier.api.user.RemoteUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 

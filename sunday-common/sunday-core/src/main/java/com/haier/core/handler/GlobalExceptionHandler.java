@@ -1,4 +1,4 @@
-package com.haier.security.handler;
+package com.haier.core.handler;
 
 import com.haier.core.domain.R;
 import com.haier.core.exception.BaseException;

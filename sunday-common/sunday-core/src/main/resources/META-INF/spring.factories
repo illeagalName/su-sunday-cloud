@@ -1,4 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- com.haier.core.util.SpringUtils
+com.haier.core.util.SpringUtils,\
+com.haier.core.handler.GlobalExceptionHandler,\
+com.haier.core.config.ApplicationConfig,\
+com.haier.core.config.FeignConfig
 
   

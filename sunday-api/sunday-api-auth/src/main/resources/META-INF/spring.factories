@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.haier.auth.api.factory.AuthFallbackFactory
+com.haier.api.auth.factory.AuthFallbackFactory

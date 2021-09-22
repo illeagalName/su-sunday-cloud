@@ -1,10 +1,11 @@
-package com.haier.security.config;
+package com.haier.core.config;
 
 import com.haier.core.constant.CacheConstants;
 import com.haier.core.util.IpUtils;
 import com.haier.core.util.ServletUtils;
 import com.haier.core.util.StringUtils;
 import feign.RequestInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @Author Ami
  * @Date 2021/9/20 21:27
  */
+@Slf4j
 public class FeignConfig {
     @Bean
     public RequestInterceptor requestInterceptor() {
@@ -35,7 +37,6 @@ public class FeignConfig {
                 if (StringUtils.isNotEmpty(authentication)) {
                     requestTemplate.header(CacheConstants.AUTHORIZATION_HEADER, authentication);
                 }
-
                 // 配置客户端IP
                 requestTemplate.header("X-Forwarded-For", IpUtils.getIpAddr(ServletUtils.getRequest()));
             }

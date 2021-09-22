@@ -1,4 +1,4 @@
-package com.haier.auth.api;
+package com.haier.api.auth;
 
 
 /**

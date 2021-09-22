@@ -1,6 +1,6 @@
 package com.haier.user.service;
 
-import com.haier.user.api.domain.UserVO;
+import com.haier.api.user.domain.UserVO;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)

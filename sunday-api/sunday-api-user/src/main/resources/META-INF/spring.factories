@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.haier.user.api.factory.UserFallbackFactory
+com.haier.api.user.factory.UserFallbackFactory

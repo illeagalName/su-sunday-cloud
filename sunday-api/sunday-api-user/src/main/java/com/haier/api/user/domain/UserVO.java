@@ -1,6 +1,8 @@
-package com.haier.auth.api.domain;
+package com.haier.api.user.domain;
 
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -57,7 +59,7 @@ public class UserVO {
     /**
      * 登录时间
      */
-    private Long loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 过期时间
@@ -68,4 +70,5 @@ public class UserVO {
      * 登录IP地址
      */
     private String ipaddr;
+
 }

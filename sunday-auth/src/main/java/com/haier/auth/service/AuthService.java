@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haier.auth.domain.LoginUser;
 import com.haier.core.domain.R;
-import com.haier.user.api.RemoteUserService;
-import com.haier.user.api.domain.UserVO;
+import com.haier.api.user.RemoteUserService;
+import com.haier.api.user.domain.UserVO;
+import com.haier.core.util.DataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -22,14 +25,10 @@ public class AuthService {
     @Autowired
     RemoteUserService remoteUserService;
 
-    public R<UserVO> login(LoginUser loginUser){
+    public R<UserVO> login(LoginUser loginUser) {
         R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUsername());
-        ObjectMapper ob = new ObjectMapper();
-        try {
-            log.info("======= {}", ob.writeValueAsString(userInfo));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        UserVO data = userInfo.getData();
+        // 判断空值和对比密码
         return userInfo;
     }
 }

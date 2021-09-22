@@ -1,6 +1,6 @@
-package com.haier.auth.api.factory;
+package com.haier.api.auth.factory;
 
-import com.haier.auth.api.RemoteAuthService;
+import com.haier.api.auth.RemoteAuthService;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
 /**

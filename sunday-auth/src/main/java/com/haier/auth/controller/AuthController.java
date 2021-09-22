@@ -3,7 +3,7 @@ package com.haier.auth.controller;
 import com.haier.auth.domain.LoginUser;
 import com.haier.auth.service.AuthService;
 import com.haier.core.domain.R;
-import com.haier.user.api.domain.UserVO;
+import com.haier.api.user.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
