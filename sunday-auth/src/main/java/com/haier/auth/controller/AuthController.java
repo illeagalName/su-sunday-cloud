@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * token 控制
@@ -22,7 +23,7 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("login")
-    public R<UserVO> login(@RequestBody LoginUser loginUser) {
+    public R<Map<String, Object>> login(@RequestBody LoginUser loginUser) {
         return authService.login(loginUser);
     }
 

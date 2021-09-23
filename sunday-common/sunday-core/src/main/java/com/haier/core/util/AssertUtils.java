@@ -2,6 +2,8 @@ package com.haier.core.util;
 
 import com.haier.core.exception.CustomException;
 
+import java.util.Arrays;
+
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
  * @Author Ami
@@ -21,9 +23,19 @@ public class AssertUtils {
         }
     }
 
+    public static void anyNotEmpty(String message, Object... objects) {
+        for (Object object : objects) {
+            if (DataUtils.isEmpty(object)) {
+                throw new CustomException(message);
+            }
+        }
+    }
+
     public static void isTrue(boolean expression, String message) {
         if (!expression) {
             throw new CustomException(message);
         }
     }
+
+
 }

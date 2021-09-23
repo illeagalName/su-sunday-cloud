@@ -44,10 +44,6 @@ public class User {
      */
     private String avatar;
     /**
-     * 加盐
-     */
-    private String salt;
-    /**
      * 账号状态，
      * 0 正常
      * 1 停用

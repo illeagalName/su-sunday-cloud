@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -36,6 +37,10 @@ public class ServletUtils {
         return Convert.toStr(getRequest().getParameter(name), defaultValue);
     }
 
+    public static String getHeader(String name) {
+        return Convert.toStr(Objects.requireNonNull(getRequest()).getHeader(name));
+    }
+
     /**
      * 获取Integer参数
      */
@@ -55,7 +60,7 @@ public class ServletUtils {
      */
     public static HttpServletRequest getRequest() {
         try {
-            return getRequestAttributes().getRequest();
+            return Objects.requireNonNull(getRequestAttributes()).getRequest();
         } catch (Exception e) {
             return null;
         }

@@ -16,11 +16,7 @@ public class CacheConstants {
      */
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    /**
-     * 权限缓存前缀
-     */
-    public final static String LOGIN_TOKEN_KEY = "login_tokens:";
-
+    /************user_id,username,client_id 是header里必须带的**************/
     /**
      * 用户ID字段
      */
@@ -30,6 +26,11 @@ public class CacheConstants {
      * 用户名字段
      */
     public static final String DETAILS_USERNAME = "username";
+
+    /**
+     * auth分组标识
+     */
+    public static final String DETAILS_CLIENT_ID = "client_id";
 
     /**
      * 授权信息字段

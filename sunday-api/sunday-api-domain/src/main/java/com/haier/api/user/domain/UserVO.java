@@ -44,10 +44,6 @@ public class UserVO {
      * 用户头像
      */
     private String avatar;
-    /**
-     * 加盐
-     */
-    private String salt;
 
 
     // 额外信息
@@ -57,6 +53,10 @@ public class UserVO {
      */
     private String token;
 
+    private String clientId;
+
+    private String secret;
+
     /**
      * 登录时间
      */
@@ -65,7 +65,12 @@ public class UserVO {
     /**
      * 过期时间
      */
-    private Long expireTime;
+    private LocalDateTime expireTime;
+
+    /**
+     * 用户身上的角色id集合
+     */
+    private List<Long> roleIds;
 
     /**
      * 登录IP地址
@@ -73,7 +78,9 @@ public class UserVO {
     private String ipaddr;
 
     /**
-     * 用户身上的角色id集合
+     * 账号状态
+     * 0 正常
+     * 1 停用
      */
-    private List<Long> roleIds;
+    private Integer status;
 }
