@@ -18,8 +18,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-api-domain</artifactId>
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>

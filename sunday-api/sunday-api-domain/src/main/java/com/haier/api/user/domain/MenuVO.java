@@ -1,14 +1,18 @@
-package com.haier.user.domain;
+package com.haier.api.user.domain;
 
 import lombok.Data;
 
 /**
- * @Description: TODO(这里用一句话描述这个类的作用)
- * @Author Ami
- * @Date 2021/9/20 20:15
+ * @ProjectName: su-sunday-cloud
+ * @Package: com.haier.api.user.domain
+ * @ClassName: MenuVO
+ * @Author: yangwendong
+ * @Description:
+ * @Date: 2021/9/23 16:01
+ * @Version: 1.0
  */
 @Data
-public class Menu {
+public class MenuVO {
     private Long menuId;
     /**
      * 菜单名称
@@ -18,10 +22,6 @@ public class Menu {
      * 父id
      */
     private Long parentId;
-    /**
-     * 顺序
-     */
-    private Integer menuSort;
     /**
      * 路由地址
      */
@@ -50,17 +50,8 @@ public class Menu {
      */
     private Integer visible;
     /**
-     * 菜单状态
-     * 0 正常
-     * 1 停用
-     */
-    private Integer status;
-    /**
      * 权限标识
      */
     private String symbol;
-    /**
-     * 菜单图标
-     */
-    private String icon;
+
 }

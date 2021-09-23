@@ -3,6 +3,7 @@ package com.haier.api.user.domain;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -71,4 +72,8 @@ public class UserVO {
      */
     private String ipaddr;
 
+    /**
+     * 用户身上的角色id集合
+     */
+    private List<Long> roleIds;
 }

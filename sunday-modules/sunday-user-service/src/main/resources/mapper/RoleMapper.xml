@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haier.user.dao.RoleMapper">
+    <select id="listRolesByUserId" resultType="com.haier.user.domain.Role">
+        select tr.*
+        from t_role tr
+                 inner join t_user_role tur on tur.role_id = tr.role_id
+        where user_id = #{userId}
+          and tr.status = 0
+          and tr.is_delete = 0
+    </select>
+
+    <select id="listRoles" resultType="com.haier.user.domain.Role">
+        select tr.*
+        from t_role tr
+        where tr.status = 0
+          and tr.is_delete = 0
+    </select>
+</mapper> 

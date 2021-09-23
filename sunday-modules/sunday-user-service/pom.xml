@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>
-            <artifactId>sunday-api-user</artifactId>
+            <artifactId>sunday-api-domain</artifactId>
         </dependency>
         <dependency>
             <groupId>com.haier</groupId>

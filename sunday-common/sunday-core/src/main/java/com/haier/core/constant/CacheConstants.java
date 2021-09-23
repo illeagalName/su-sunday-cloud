@@ -35,4 +35,18 @@ public class CacheConstants {
      * 授权信息字段
      */
     public static final String AUTHORIZATION_HEADER = "authorization";
+
+
+    /**
+     * 用户角色
+     */
+    public static final String AUTHORIZATION_USER_ROLE = "sunday:user:role:";
+    /**
+     * 用户菜单
+     */
+    public static final String AUTHORIZATION_USER_MENU = "sunday:user:menu:";
+    /**
+     * 用户token
+     */
+    public static final String AUTHORIZATION_USER_TOKEN = "sunday:user:token:";
 }
