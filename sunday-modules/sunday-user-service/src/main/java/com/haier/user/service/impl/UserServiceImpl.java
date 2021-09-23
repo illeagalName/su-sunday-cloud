@@ -1,13 +1,18 @@
 package com.haier.user.service.impl;
 
 import com.haier.core.util.AssertUtils;
+import com.haier.user.dao.RoleMapper;
 import com.haier.user.dao.UserMapper;
+import com.haier.user.domain.Role;
 import com.haier.user.domain.User;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -21,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    RoleMapper roleMapper;
+
     @Override
     public UserVO selectUserByUserName(String username) {
         User user = userMapper.selectUserByUserName(username);
@@ -28,6 +36,8 @@ public class UserServiceImpl implements UserService {
         // 先用BeanUtil 后面改为MapStruct
         UserVO vo = new UserVO();
         BeanUtils.copyProperties(user, vo);
+        List<Role> roles = roleMapper.listRolesByUserId(user.getUserId());
+        vo.setRoleIds(roles.stream().map(Role::getRoleId).collect(Collectors.toList()));
         return vo;
     }
 }
