@@ -39,6 +39,7 @@ public class AuthController {
 
     @GetMapping("user")
     public R<?> getUserInfo(@RequestParam("token") String token) {
-        return null;
+        authService.verify(token);
+        return R.success();
     }
 }

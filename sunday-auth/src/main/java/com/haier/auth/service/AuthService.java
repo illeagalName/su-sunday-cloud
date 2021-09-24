@@ -1,24 +1,25 @@
 package com.haier.auth.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.haier.api.user.domain.ClientVO;
 import com.haier.auth.domain.LoginUser;
 import com.haier.core.constant.CacheConstants;
 import com.haier.core.domain.R;
 import com.haier.api.user.RemoteUserService;
 import com.haier.api.user.domain.UserVO;
-import com.haier.core.exception.CustomException;
 import com.haier.core.util.*;
 import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.haier.core.constant.CacheConstants.DETAILS_CLIENT_ID;
@@ -52,16 +53,32 @@ public class AuthService {
         return R.success(createToken(data));
     }
 
+    public void verify(String token) {
+        Base64.Decoder decoder = Base64.getDecoder();
+        String s = new String(decoder.decode(token.split("\\.")[1]), StandardCharsets.UTF_8);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, Object> map = objectMapper.readValue(s, new TypeReference<>() {
+            });
+            UserVO user = redisService.getObject(AUTHORIZATION_USER_TOKEN + map.get("clientId") + ":" + map.get("userId"));
+            boolean b = SecurityUtils.verifyToken(token, user.getSecret());
+            log.info("校验结果 {}", b);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public Map<String, Object> createToken(UserVO user) {
+
+    private Map<String, Object> createToken(UserVO user) {
         // 获取加密盐
         String secret = SecurityUtils.generateSecurityCode();
         // 从header中获取clientId
         String clientId = ServletUtils.getHeader(DETAILS_CLIENT_ID);
-        // TODO 验证客户端是否正确，待完善
         AssertUtils.notEmpty(clientId, "客户端标识不正确");
+        ClientVO clientMap = redisService.getObject(CacheConstants.AUTHORIZATION_USER_CLIENT + clientId);
+        AssertUtils.notEmpty(clientMap, "客户端标识不正确");
         // 生成token
-        Date date = new Date(System.currentTimeMillis() + SecurityUtils.EXPIRE_DATE);
+        Date date = new Date(System.currentTimeMillis() + clientMap.getTime() * 1000);
         String token = SecurityUtils.createToken(user.getUserId(), user.getUserName(), clientId, secret, date);
 
         user.setClientId(clientId);
@@ -76,7 +93,7 @@ public class AuthService {
         Map<String, Object> map = new HashMap<>();
         map.put("access_token", token);
         map.put("expires_in", expireTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
-        redisService.setObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + user.getUserId(), user, SecurityUtils.EXPIRE_DATE, TimeUnit.MILLISECONDS);
+        redisService.setObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + user.getUserId(), user, clientMap.getTime() - 1, TimeUnit.SECONDS);
         return map;
     }
 }

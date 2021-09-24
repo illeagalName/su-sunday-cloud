@@ -50,4 +50,6 @@ public class CacheConstants {
      * 用户token
      */
     public static final String AUTHORIZATION_USER_TOKEN = "sunday:user:token:";
+
+    public static final String AUTHORIZATION_USER_CLIENT = "sunday:user:client:";
 }
