@@ -29,3 +29,12 @@ spring:
         #        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
         shared-configs[0]:
           data-id: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          refresh: true
+
+
+logging:
+  file:
+    path: /usr/local/java/logs/sunday/${spring.application.name}
+
+logstash:
+  address: localhost:4560

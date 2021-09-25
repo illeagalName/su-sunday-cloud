@@ -47,11 +47,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
-
-        log.info("===================AuthFilter=================");
-        log.info("白名单 {}", JsonUtils.toStringPretty(whiteListProperties.getLists()));
-
         String url = exchange.getRequest().getURI().getPath();
         // 跳过不需要验证的路径
         if (StringUtils.matches(url, whiteListProperties.getLists())) {

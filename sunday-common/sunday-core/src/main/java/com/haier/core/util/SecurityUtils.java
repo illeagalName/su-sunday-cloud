@@ -117,7 +117,6 @@ public class SecurityUtils {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT jwt = verifier.verify(token);
-            log.info(" 解析：{} ", jwt.getClaims());
             return true;
         } catch (Exception e) {
             log.error("校验token异常", e);
