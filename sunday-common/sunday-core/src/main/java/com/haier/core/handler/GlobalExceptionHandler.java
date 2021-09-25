@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Optional;
+
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
  * @Author Ami
@@ -41,8 +43,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public R<String> handleException(Exception e) {
-        log.error(e.getMessage(), e);
-        return R.error(e.getMessage());
+        String s = Optional.ofNullable(e).map(Exception::getMessage).orElse("系统异常");
+        log.error(s);
+        return R.error(s);
     }
 
     /**

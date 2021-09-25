@@ -38,7 +38,7 @@ public class ServletUtils {
     }
 
     public static String getHeader(String name) {
-        return Convert.toStr(Objects.requireNonNull(getRequest()).getHeader(name));
+        return Convert.toStr(getRequest().getHeader(name));
     }
 
     /**
@@ -59,22 +59,14 @@ public class ServletUtils {
      * 获取request
      */
     public static HttpServletRequest getRequest() {
-        try {
-            return Objects.requireNonNull(getRequestAttributes()).getRequest();
-        } catch (Exception e) {
-            return null;
-        }
+        return getRequestAttributes().getRequest();
     }
 
     /**
      * 获取response
      */
     public static HttpServletResponse getResponse() {
-        try {
-            return getRequestAttributes().getResponse();
-        } catch (Exception e) {
-            return null;
-        }
+        return getRequestAttributes().getResponse();
     }
 
     /**
@@ -85,12 +77,8 @@ public class ServletUtils {
     }
 
     public static ServletRequestAttributes getRequestAttributes() {
-        try {
-            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            return (ServletRequestAttributes) attributes;
-        } catch (Exception e) {
-            return null;
-        }
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        return (ServletRequestAttributes) attributes;
     }
 
     public static Map<String, String> getHeaders(HttpServletRequest request) {

@@ -32,11 +32,6 @@ public class CacheConstants {
      */
     public static final String DETAILS_CLIENT_ID = "client_id";
 
-    /**
-     * 授权信息字段
-     */
-    public static final String AUTHORIZATION_HEADER = "authorization";
-
 
     /**
      * 用户角色

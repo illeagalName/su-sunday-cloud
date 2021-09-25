@@ -33,9 +33,9 @@ public class FeignConfig {
                 if (StringUtils.isNotEmpty(userName)) {
                     requestTemplate.header(CacheConstants.DETAILS_USERNAME, userName);
                 }
-                String authentication = headers.get(CacheConstants.AUTHORIZATION_HEADER);
-                if (StringUtils.isNotEmpty(authentication)) {
-                    requestTemplate.header(CacheConstants.AUTHORIZATION_HEADER, authentication);
+                String clientId = headers.get(CacheConstants.DETAILS_CLIENT_ID);
+                if (StringUtils.isNotEmpty(clientId)) {
+                    requestTemplate.header(CacheConstants.DETAILS_CLIENT_ID, clientId);
                 }
                 // 配置客户端IP
                 requestTemplate.header("X-Forwarded-For", IpUtils.getIpAddr(ServletUtils.getRequest()));

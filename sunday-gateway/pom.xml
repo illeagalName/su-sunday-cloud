@@ -16,4 +16,56 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <!--
+                有错误：Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway
+                提示 Action: Please set spring.main.web-application-type=reactive or remove spring-boot-starter-web dependency.
+                排除依赖后还是报错，可能是没排除干净，但是我找不到哪里还需要排除的
+                因此只能按照第一个提示设置了，spring.main.web-application-type=reactive
+                嘿，启动成功了，gateway路由什么的都正常，只能这样了
+                如果有其他的好的解决方式，请联系我
+            -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-api-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

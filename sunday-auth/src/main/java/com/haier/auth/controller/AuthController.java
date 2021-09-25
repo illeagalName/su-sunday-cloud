@@ -3,7 +3,6 @@ package com.haier.auth.controller;
 import com.haier.auth.domain.LoginUser;
 import com.haier.auth.service.AuthService;
 import com.haier.core.domain.R;
-import com.haier.api.user.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ import java.util.Map;
  * @author
  */
 @RestController
-@RequestMapping("auth")
 public class AuthController {
 
     @Autowired
@@ -35,11 +33,5 @@ public class AuthController {
     @PostMapping("refresh")
     public R<?> refresh(HttpServletRequest request) {
         return null;
-    }
-
-    @GetMapping("user")
-    public R<?> getUserInfo(@RequestParam("token") String token) {
-        authService.verify(token);
-        return R.success();
     }
 }

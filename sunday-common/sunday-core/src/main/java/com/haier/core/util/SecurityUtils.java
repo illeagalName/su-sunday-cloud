@@ -1,17 +1,21 @@
 package com.haier.core.util;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.UUID;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.haier.core.constant.CacheConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -20,6 +24,29 @@ import java.util.Map;
  */
 @Slf4j
 public class SecurityUtils {
+
+    /**
+     * 获取用户
+     */
+    public static String getUsername() {
+        return Optional.ofNullable(ServletUtils.getHeader(CacheConstants.DETAILS_USERNAME)).map(ServletUtils::urlDecode).orElse(null);
+    }
+
+    /**
+     * 获取用户ID
+     */
+    public static Long getUserId() {
+        return Optional.ofNullable(ServletUtils.getHeader(CacheConstants.DETAILS_USER_ID)).map(Convert::toLong).orElse(null);
+    }
+
+    /**
+     * 获取客户端标识
+     */
+    public static String getClientId() {
+        return ServletUtils.getHeader(CacheConstants.DETAILS_CLIENT_ID);
+    }
+
+    /************************密码对比************************/
 
     static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -45,23 +72,24 @@ public class SecurityUtils {
     }
 
 
-    /**
-     * 来源分组，后面配置到表里，模仿auth的client_id
-     */
-    private static final String SOURCE_GROUP = "default";
+    /************************token操作************************/
 
-    //token秘钥
-    private static final String TOKEN_SECRET = "ZCfasfhuaUUHufguGuwu2020BQWE";
-
-    //设置过期时间 12小时
-    public static final long EXPIRE_DATE = 12 * 60 * 60 * 1000;
     //设置头部信息 header
     private static final Map<String, Object> HEADER = new HashMap<>() {{
         put("typ", "JWT");
         put("alg", "HS256");
     }};
 
-    public static String createToken(Long userId, String userName, String clientId, String secret, Date date) {
+    /**
+     * 创建token
+     *
+     * @param uniqueId 唯一标识
+     * @param clientId 分组id
+     * @param secret   加密串
+     * @param date     过期时间
+     * @return String
+     */
+    public static String createToken(Long uniqueId, String clientId, String secret, Date date) {
         try {
             //秘钥及加密算法
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -70,8 +98,8 @@ public class SecurityUtils {
             return JWT.create()
                     .withHeader(HEADER)
                     .withClaim("clientId", clientId)
-                    .withClaim("userId", userId)
-                    .withClaim("userName", userName).withExpiresAt(date)
+                    .withClaim("uniqueId", uniqueId)
+                    .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
             log.error("生成token异常", e);
@@ -97,6 +125,22 @@ public class SecurityUtils {
         }
     }
 
+    /**
+     * 从header中获取jwt token
+     *
+     * @param request
+     * @return
+     */
+    public static String getToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(CacheConstants.HEADER);
+        if (StringUtils.isNotBlank(token) && token.startsWith(CacheConstants.TOKEN_PREFIX)) {
+            token = token.replace(CacheConstants.TOKEN_PREFIX, "");
+        }
+        return token;
+    }
+
+
+    /************************ID操作************************/
 
     /**
      * 获取随机UUID，使用性能更好的ThreadLocalRandom生成UUID
