@@ -6,7 +6,7 @@
 
     <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="undefinedAppName"/>
     <springProperty scope="context" name="profile" source="spring.profiles.active" defaultValue="dev"/>
-    <springProperty scope="context" name="logstash_address" source="logstash.address" defaultValue="localhost:4560"/>
+    <springProperty scope="context" name="LOG_HOST_PORT" source="logstash.address"/>
 
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord="wex"
@@ -76,7 +76,7 @@
     <!--输出到logstash的appender-->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <!--可以访问的logstash日志收集端口-->
-        <destination>${logstash_address}</destination>
+        <destination>${LOG_HOST_PORT}</destination>
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
@@ -87,9 +87,10 @@
                     <pattern>
                         <!--输出日志可自定义，可根据自己需要配置-->
                         {
-                        "timestamp": "@timestamp",
-                        "severity": "%level",
                         "service": "${APP_NAME:-}",
+                        "severity": "%level",
+                        "datetime":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+                        "timestamp": "@timestamp",
                         "trace": "%X{traceId:-}",
                         "span": "%X{spanId:-}",
                         "pid": "${PID:-}",

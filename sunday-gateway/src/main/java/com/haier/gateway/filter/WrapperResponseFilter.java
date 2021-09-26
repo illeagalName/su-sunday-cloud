@@ -2,8 +2,12 @@ package com.haier.gateway.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.sleuth.CurrentTraceContext;
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.sleuth.instrument.web.WebFluxSleuthOperators;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -27,6 +31,13 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class WrapperResponseFilter implements GlobalFilter, Ordered {
+
+    @Autowired
+    Tracer tracer;
+
+    @Autowired
+    CurrentTraceContext currentTraceContext;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         //获取response的 返回数据
@@ -44,9 +55,11 @@ public class WrapperResponseFilter implements GlobalFilter, Ordered {
                         DataBufferUtils.release(dataBuffer);
                         //responseData就是下游系统返回的内容,可以查看修改
                         String responseData = new String(content, StandardCharsets.UTF_8);
-                        log.info("***********************************响应信息**********************************");
-                        log.info("响应内容:{}", responseData);
-                        log.info("****************************************************************************\n");
+                        WebFluxSleuthOperators.withSpanInScope(tracer, currentTraceContext, exchange, () -> {
+                            log.info("***********************************响应信息**********************************");
+                            log.info("响应内容:{}", responseData);
+                            log.info("****************************************************************************\n");
+                        });
                         byte[] uppedContent = responseData.getBytes(StandardCharsets.UTF_8);
                         return bufferFactory.wrap(uppedContent);
                     }));

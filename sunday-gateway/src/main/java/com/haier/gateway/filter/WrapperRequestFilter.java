@@ -2,8 +2,12 @@ package com.haier.gateway.filter;
 
 import com.haier.core.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.sleuth.CurrentTraceContext;
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.sleuth.instrument.web.WebFluxSleuthOperators;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -30,6 +34,13 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class WrapperRequestFilter implements GlobalFilter, Ordered {
 
+
+    @Autowired
+    Tracer tracer;
+
+    @Autowired
+    CurrentTraceContext currentTraceContext;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -45,8 +56,10 @@ public class WrapperRequestFilter implements GlobalFilter, Ordered {
             return DataBufferUtils.join(body).map(dataBuffer -> {
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
                 dataBuffer.read(bytes);
-                log.info("请求参数:{}", new String(bytes, StandardCharsets.UTF_8));
-                log.info("****************************************************************************\n");
+                WebFluxSleuthOperators.withSpanInScope(tracer, currentTraceContext, exchange, () -> {
+                    log.info("请求参数:{}", new String(bytes, StandardCharsets.UTF_8));
+                    log.info("****************************************************************************\n");
+                });
                 DataBufferUtils.release(dataBuffer);
                 return bytes;
             }).defaultIfEmpty(new byte[0]).flatMap(bytes -> {
