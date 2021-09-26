@@ -89,8 +89,6 @@
                         {
                         "service": "${APP_NAME:-}",
                         "severity": "%level",
-                        "datetime":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
-                        "timestamp": "@timestamp",
                         "trace": "%X{traceId:-}",
                         "span": "%X{spanId:-}",
                         "pid": "${PID:-}",
