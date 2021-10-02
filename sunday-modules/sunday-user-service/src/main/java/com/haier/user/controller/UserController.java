@@ -2,7 +2,7 @@ package com.haier.user.controller;
 
 import com.haier.core.domain.R;
 import com.haier.core.util.SecurityUtils;
-import com.haier.core.util.ServletUtils;
+import com.haier.user.es.LogService;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -25,6 +28,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    LogService logService;
+
     @GetMapping("info/{username}")
     public R<UserVO> getUserInfo(@PathVariable("username") String username) {
         String clientId = SecurityUtils.getClientId();
@@ -32,5 +38,11 @@ public class UserController {
         String username1 = SecurityUtils.getUsername();
         log.info("clientId = {} , userId = {} , username = {}", clientId, userId, username1);
         return R.success(userService.selectUserByUserName(username));
+    }
+
+    @GetMapping("log")
+    public R<?> log() {
+        List<Map<String, Object>> maps = logService.get();
+        return R.success(maps);
     }
 }

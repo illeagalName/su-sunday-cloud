@@ -14,6 +14,7 @@
     <modules>
         <module>sunday-core</module>
         <module>sunday-redis</module>
+        <module>sunday-elasticsearch</module>
     </modules>
 
     <properties>
