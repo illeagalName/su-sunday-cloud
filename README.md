@@ -28,4 +28,4 @@
 
 ![img_1.png](img_1.png)
 
-访问请求在gateway处的权限filter校验，通过PreAuthorize注解配置
+访问请求在gateway处的AuthFilter校验登录信息，通过PreAuthorize注解和Aspect校验菜单信息
