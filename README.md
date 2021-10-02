@@ -15,6 +15,6 @@
 
 - **2021年09月24日 登录接口完成，JWT格式，分组和加密盐随机生成**
 - **2021年09月26日 集成logstash将日志打入ES中**
-- **TODO 2021年09月30日 集成Rest High Level Client 输出日志**
+- **2021年10月02日 集成Rest High Level Client 简单实现查询并输出数据**
 - **TODO 2021年10月15日 集成MinIO完成文件上传(模拟OSS)**
 - **TODO 2021年10月30日 集成mybatis-plus简化xml的sql编写**
