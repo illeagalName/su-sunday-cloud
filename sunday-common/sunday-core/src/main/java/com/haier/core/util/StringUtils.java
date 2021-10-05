@@ -1,13 +1,16 @@
 package com.haier.core.util;
 
-import cn.hutool.core.text.StrFormatter;
 import com.haier.core.constant.CommonConstants;
+import com.haier.core.enums.PatternEnum;
+import com.haier.core.exception.BaseException;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.util.AntPathMatcher;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -25,15 +28,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     private static final char SEPARATOR = '_';
 
-    /**
-     * 获取参数不为空值
-     *
-     * @param value defaultValue 要判断的value
-     * @return value 返回值
-     */
-    public static <T> T nvl(T value, T defaultValue) {
-        return value != null ? value : defaultValue;
-    }
 
     /**
      * * 判断一个Collection是否为空， 包含List，Set，Queue
@@ -135,126 +129,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return !isNull(object);
     }
 
-    /**
-     * * 判断一个对象是否是数组类型（Java基本型别的数组）
-     *
-     * @param object 对象
-     * @return true：是数组 false：不是数组
-     */
-    public static boolean isArray(Object object) {
-        return isNotNull(object) && object.getClass().isArray();
-    }
-
-    /**
-     * 去空格
-     */
-    public static String trim(String str) {
-        return (str == null ? "" : str.trim());
-    }
-
-    /**
-     * 截取字符串
-     *
-     * @param str   字符串
-     * @param start 开始
-     * @return 结果
-     */
-    public static String substring(final String str, int start) {
-        if (str == null) {
-            return NULLSTR;
-        }
-
-        if (start < 0) {
-            start = str.length() + start;
-        }
-
-        if (start < 0) {
-            start = 0;
-        }
-        if (start > str.length()) {
-            return NULLSTR;
-        }
-
-        return str.substring(start);
-    }
-
-    /**
-     * 截取字符串
-     *
-     * @param str   字符串
-     * @param start 开始
-     * @param end   结束
-     * @return 结果
-     */
-    public static String substring(final String str, int start, int end) {
-        if (str == null) {
-            return NULLSTR;
-        }
-
-        if (end < 0) {
-            end = str.length() + end;
-        }
-        if (start < 0) {
-            start = str.length() + start;
-        }
-
-        if (end > str.length()) {
-            end = str.length();
-        }
-
-        if (start > end) {
-            return NULLSTR;
-        }
-
-        if (start < 0) {
-            start = 0;
-        }
-        if (end < 0) {
-            end = 0;
-        }
-
-        return str.substring(start, end);
-    }
-
-    /**
-     * 判断是否为空，并且不是空白字符
-     *
-     * @param str 要判断的value
-     * @return 结果
-     */
-    public static boolean hasText(String str) {
-        return (str != null && !str.isEmpty() && containsText(str));
-    }
-
-    private static boolean containsText(CharSequence str) {
-        int strLen = str.length();
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(str.charAt(i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 格式化文本, {} 表示占位符<br>
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
-     * 例：<br>
-     * 通常使用：format("this is {} for {}", "a", "b") -> this is a for b<br>
-     * 转义{}： format("this is \\{} for {}", "a", "b") -> this is \{} for a<br>
-     * 转义\： format("this is \\\\{} for {}", "a", "b") -> this is \a for b<br>
-     *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param params   参数值
-     * @return 格式化后的文本
-     */
-    public static String format(String template, Object... params) {
-        if (isEmpty(params) || isEmpty(template)) {
-            return template;
-        }
-        return StrFormatter.format(template, params);
-    }
 
     /**
      * 是否为http(s)://开头
@@ -305,19 +179,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return sb.toString();
     }
 
-    /**
-     * 是否包含字符串
-     *
-     * @param str  验证字符串
-     * @param strs 字符串组
-     * @return 包含返回true
-     */
-    public static boolean inStringIgnoreCase(String str, String... strs) {
-        if (str != null && strs != null) {
-            return Arrays.stream(strs).anyMatch(s -> str.equalsIgnoreCase(trim(s)));
-        }
-        return false;
-    }
 
     /**
      * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：HELLO_WORLD->HelloWorld
@@ -408,8 +269,365 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return matcher.match(pattern, url);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T cast(Object obj) {
-        return (T) obj;
+    public static final String SPACE = " ";
+    public static final String TAB = "	";
+    public static final String DOT = ".";
+    public static final String DOUBLE_DOT = "..";
+    public static final String SLASH = "/";
+    public static final String BACKSLASH = "\\";
+    public static final String EMPTY = "";
+    public static final String CR = "\r";
+    public static final String LF = "\n";
+    public static final String CRLF = "\r\n";
+    public static final String UNDERLINE = "_";
+    public static final String DASHED = "-";
+    public static final String COMMA = ",";
+    public static final String DELIM_START = "{";
+    public static final String DELIM_END = "}";
+    public static final String BRACKET_START = "[";
+    public static final String BRACKET_END = "]";
+    public static final String COLON = ":";
+
+    /**
+     * 将var2参数替换成var1中出现的{}
+     * <pre>
+     * stringFormat("text{}", "a") = texta
+     * stringFormat("text,{},{}", "a", "b") = text,a,b
+     * stringFormat("text{}", Arrays.asList("1", "2", "3")) = text[1, 2, 3]
+     * stringFormat("text\\{}", "a") = text{}
+     * </pre>
+     *
+     * @param var1 字符串
+     * @param var2 参数
+     * @return
+     */
+    public static String stringFormat(String var1, Object... var2) {
+        return MessageFormatter.arrayFormat(var1, var2).getMessage();
     }
+
+    /**
+     * EMOJI encode
+     *
+     * @param content 带有emoji表情的字符串
+     * @return 将字符串中的emoji表情编码为UTF-8
+     */
+    public static String emojiEncode(String content) {
+        try {
+            return RegexUtils.replaceAll(content, PatternEnum.EMOJI.getPattern(), a -> "[[EMOJI:" + URLEncoder.encode(a, StandardCharsets.UTF_8) + "]]");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new BaseException("emoji filter error");
+    }
+
+
+    /**
+     * EMOJI decode
+     *
+     * @param content 字符串
+     * @return 将带有编码后emoji的字符串 解码为emoji
+     */
+    public static String emojiDecode(String content) {
+        try {
+            return RegexUtils.replaceAll(content, PatternEnum.EMOJI_DECODE.getPattern(), a -> URLDecoder.decode(a, StandardCharsets.UTF_8), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new BaseException("emoji decode error");
+    }
+
+
+    public static class MessageFormatter {
+        static final char DELIM_START = '{';
+        static final char DELIM_STOP = '}';
+        static final String DELIM_STR = "{}";
+        private static final char ESCAPE_CHAR = '\\';
+
+        static final Throwable getThrowableCandidate(Object[] argArray) {
+            if (argArray == null || argArray.length == 0) {
+                return null;
+            }
+
+            final Object lastEntry = argArray[argArray.length - 1];
+            if (lastEntry instanceof Throwable) {
+                return (Throwable) lastEntry;
+            }
+            return null;
+        }
+
+        final public static FormattingTuple arrayFormat(final String messagePattern, final Object[] argArray) {
+            Throwable throwableCandidate = getThrowableCandidate(argArray);
+            Object[] args = argArray;
+            if (throwableCandidate != null) {
+                args = trimmedCopy(argArray);
+            }
+            return arrayFormat(messagePattern, args, throwableCandidate);
+        }
+
+        private static Object[] trimmedCopy(Object[] argArray) {
+            if (argArray == null || argArray.length == 0) {
+                throw new IllegalStateException("non-sensical empty or null argument array");
+            }
+            final int trimemdLen = argArray.length - 1;
+            Object[] trimmed = new Object[trimemdLen];
+            System.arraycopy(argArray, 0, trimmed, 0, trimemdLen);
+            return trimmed;
+        }
+
+        final public static FormattingTuple arrayFormat(final String messagePattern, final Object[] argArray, Throwable throwable) {
+
+            if (messagePattern == null) {
+                return new FormattingTuple(null, argArray, throwable);
+            }
+
+            if (argArray == null) {
+                return new FormattingTuple(messagePattern);
+            }
+
+            int i = 0;
+            int j;
+            // use string builder for better multicore performance
+            StringBuilder sbuf = new StringBuilder(messagePattern.length() + 50);
+
+            int L;
+            for (L = 0; L < argArray.length; L++) {
+
+                j = messagePattern.indexOf(DELIM_STR, i);
+
+                if (j == -1) {
+                    // no more variables
+                    if (i == 0) { // this is a simple string
+                        return new FormattingTuple(messagePattern, argArray, throwable);
+                    } else { // add the tail string which contains no variables and return
+                        // the result.
+                        sbuf.append(messagePattern, i, messagePattern.length());
+                        return new FormattingTuple(sbuf.toString(), argArray, throwable);
+                    }
+                } else {
+                    if (isEscapedDelimeter(messagePattern, j)) {
+                        if (!isDoubleEscaped(messagePattern, j)) {
+                            L--; // DELIM_START was escaped, thus should not be incremented
+                            sbuf.append(messagePattern, i, j - 1);
+                            sbuf.append(DELIM_START);
+                            i = j + 1;
+                        } else {
+                            // The escape character preceding the delimiter start is
+                            // itself escaped: "abc x:\\{}"
+                            // we have to consume one backward slash
+                            sbuf.append(messagePattern, i, j - 1);
+                            deeplyAppendParameter(sbuf, argArray[L], new HashMap<Object[], Object>());
+                            i = j + 2;
+                        }
+                    } else {
+                        // normal case
+                        sbuf.append(messagePattern, i, j);
+                        deeplyAppendParameter(sbuf, argArray[L], new HashMap<Object[], Object>());
+                        i = j + 2;
+                    }
+                }
+            }
+            // append the characters following the last {} pair.
+            sbuf.append(messagePattern, i, messagePattern.length());
+            return new FormattingTuple(sbuf.toString(), argArray, throwable);
+        }
+
+        final static boolean isEscapedDelimeter(String messagePattern, int delimeterStartIndex) {
+
+            if (delimeterStartIndex == 0) {
+                return false;
+            }
+            char potentialEscape = messagePattern.charAt(delimeterStartIndex - 1);
+            if (potentialEscape == ESCAPE_CHAR) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        final static boolean isDoubleEscaped(String messagePattern, int delimeterStartIndex) {
+            if (delimeterStartIndex >= 2 && messagePattern.charAt(delimeterStartIndex - 2) == ESCAPE_CHAR) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // special treatment of array values was suggested by 'lizongbo'
+        private static void deeplyAppendParameter(StringBuilder sbuf, Object o, Map<Object[], Object> seenMap) {
+            if (o == null) {
+                sbuf.append("null");
+                return;
+            }
+            if (!o.getClass().isArray()) {
+                safeObjectAppend(sbuf, o);
+            } else {
+                // check for primitive array types because they
+                // unfortunately cannot be cast to Object[]
+                if (o instanceof boolean[]) {
+                    booleanArrayAppend(sbuf, (boolean[]) o);
+                } else if (o instanceof byte[]) {
+                    byteArrayAppend(sbuf, (byte[]) o);
+                } else if (o instanceof char[]) {
+                    charArrayAppend(sbuf, (char[]) o);
+                } else if (o instanceof short[]) {
+                    shortArrayAppend(sbuf, (short[]) o);
+                } else if (o instanceof int[]) {
+                    intArrayAppend(sbuf, (int[]) o);
+                } else if (o instanceof long[]) {
+                    longArrayAppend(sbuf, (long[]) o);
+                } else if (o instanceof float[]) {
+                    floatArrayAppend(sbuf, (float[]) o);
+                } else if (o instanceof double[]) {
+                    doubleArrayAppend(sbuf, (double[]) o);
+                } else {
+                    objectArrayAppend(sbuf, (Object[]) o, seenMap);
+                }
+            }
+        }
+
+        private static void safeObjectAppend(StringBuilder sbuf, Object o) {
+            try {
+                String oAsString = o.toString();
+                sbuf.append(oAsString);
+            } catch (Throwable t) {
+                System.err.println("SLF4J: Failed toString() invocation on an object of type [" + o.getClass().getName() + "]");
+                System.err.println("Reported exception:");
+                t.printStackTrace();
+                sbuf.append("[FAILED toString()]");
+            }
+
+        }
+
+        private static void objectArrayAppend(StringBuilder sbuf, Object[] a, Map<Object[], Object> seenMap) {
+            sbuf.append('[');
+            if (!seenMap.containsKey(a)) {
+                seenMap.put(a, null);
+                final int len = a.length;
+                for (int i = 0; i < len; i++) {
+                    deeplyAppendParameter(sbuf, a[i], seenMap);
+                    if (i != len - 1)
+                        sbuf.append(", ");
+                }
+                // allow repeats in siblings
+                seenMap.remove(a);
+            } else {
+                sbuf.append("...");
+            }
+            sbuf.append(']');
+        }
+
+        private static void booleanArrayAppend(StringBuilder sbuf, boolean[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void byteArrayAppend(StringBuilder sbuf, byte[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void charArrayAppend(StringBuilder sbuf, char[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void shortArrayAppend(StringBuilder sbuf, short[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void intArrayAppend(StringBuilder sbuf, int[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void longArrayAppend(StringBuilder sbuf, long[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void floatArrayAppend(StringBuilder sbuf, float[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+
+        private static void doubleArrayAppend(StringBuilder sbuf, double[] a) {
+            sbuf.append('[');
+            final int len = a.length;
+            for (int i = 0; i < len; i++) {
+                sbuf.append(a[i]);
+                if (i != len - 1)
+                    sbuf.append(", ");
+            }
+            sbuf.append(']');
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class FormattingTuple {
+
+        /**
+         * 消息体
+         */
+        private String message;
+
+        /**
+         * 消息拼接的参数
+         */
+        private Object[] argArray;
+
+        /**
+         * 异常
+         */
+        private Throwable throwable;
+
+
+        public FormattingTuple(String message) {
+            this(message, null, null);
+        }
+    }
+
 }

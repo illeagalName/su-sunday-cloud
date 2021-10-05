@@ -8,14 +8,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -94,52 +92,6 @@ public class ServletUtils {
         return map;
     }
 
-    /**
-     * 将字符串渲染到客户端
-     *
-     * @param response 渲染对象
-     * @param string   待渲染的字符串
-     * @return null
-     */
-    public static String renderString(HttpServletResponse response, String string) {
-        try {
-            response.setStatus(200);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf-8");
-            response.getWriter().print(string);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 是否是Ajax异步请求
-     *
-     * @param request
-     */
-    public static boolean isAjaxRequest(HttpServletRequest request) {
-        String accept = request.getHeader("accept");
-        if (accept != null && accept.indexOf("application/json") != -1) {
-            return true;
-        }
-
-        String xRequestedWith = request.getHeader("X-Requested-With");
-        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) {
-            return true;
-        }
-
-        String uri = request.getRequestURI();
-        if (StringUtils.inStringIgnoreCase(uri, ".json", ".xml")) {
-            return true;
-        }
-
-        String ajax = request.getParameter("__ajax");
-        if (StringUtils.inStringIgnoreCase(ajax, "json", "xml")) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 内容编码

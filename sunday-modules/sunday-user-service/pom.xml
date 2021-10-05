@@ -82,5 +82,9 @@
             <groupId>com.haier</groupId>
             <artifactId>sunday-elasticsearch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-minio</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public R<String> handleException(Exception e) {
         String s = Optional.ofNullable(e).map(Exception::getMessage).orElse("系统异常");
-        log.error(s);
+        log.error("异常 ", e);
         return R.error(s);
     }
 

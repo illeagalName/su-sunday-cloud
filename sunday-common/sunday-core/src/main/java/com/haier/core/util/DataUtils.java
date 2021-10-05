@@ -9,6 +9,12 @@ import java.util.Map;
  * @Date 2021/9/20 22:08
  */
 public class DataUtils {
+    /**
+     * 判断参数是否为空
+     *
+     * @param pObj
+     * @return
+     */
     public static boolean isEmpty(Object pObj) {
         if (pObj == null) {
             return true;

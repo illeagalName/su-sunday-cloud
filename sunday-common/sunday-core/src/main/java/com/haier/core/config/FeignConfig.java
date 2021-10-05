@@ -22,24 +22,22 @@ public class FeignConfig {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             HttpServletRequest httpServletRequest = ServletUtils.getRequest();
-            if (StringUtils.isNotNull(httpServletRequest)) {
-                Map<String, String> headers = ServletUtils.getHeaders(httpServletRequest);
-                // 传递用户信息请求头，防止丢失
-                String userId = headers.get(CacheConstants.DETAILS_USER_ID);
-                if (StringUtils.isNotEmpty(userId)) {
-                    requestTemplate.header(CacheConstants.DETAILS_USER_ID, userId);
-                }
-                String userName = headers.get(CacheConstants.DETAILS_USERNAME);
-                if (StringUtils.isNotEmpty(userName)) {
-                    requestTemplate.header(CacheConstants.DETAILS_USERNAME, userName);
-                }
-                String clientId = headers.get(CacheConstants.DETAILS_CLIENT_ID);
-                if (StringUtils.isNotEmpty(clientId)) {
-                    requestTemplate.header(CacheConstants.DETAILS_CLIENT_ID, clientId);
-                }
-                // 配置客户端IP
-                requestTemplate.header("X-Forwarded-For", IpUtils.getIpAddr(ServletUtils.getRequest()));
+            Map<String, String> headers = ServletUtils.getHeaders(httpServletRequest);
+            // 传递用户信息请求头，防止丢失
+            String userId = headers.get(CacheConstants.DETAILS_USER_ID);
+            if (StringUtils.isNotEmpty(userId)) {
+                requestTemplate.header(CacheConstants.DETAILS_USER_ID, userId);
             }
+            String userName = headers.get(CacheConstants.DETAILS_USERNAME);
+            if (StringUtils.isNotEmpty(userName)) {
+                requestTemplate.header(CacheConstants.DETAILS_USERNAME, userName);
+            }
+            String clientId = headers.get(CacheConstants.DETAILS_CLIENT_ID);
+            if (StringUtils.isNotEmpty(clientId)) {
+                requestTemplate.header(CacheConstants.DETAILS_CLIENT_ID, clientId);
+            }
+            // 配置客户端IP
+            requestTemplate.header("X-Forwarded-For", IpUtils.getIpAddr(ServletUtils.getRequest()));
         };
     }
 }

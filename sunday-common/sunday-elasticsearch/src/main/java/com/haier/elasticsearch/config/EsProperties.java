@@ -34,12 +34,12 @@ public class EsProperties {
     /**
      * 连接超时时间(毫秒)
      */
-    private Integer connectTimeout = 1000;
+    private Integer connectTimeout = 5000;
 
     /**
      * socket 超时时间
      */
-    private Integer socketTimeout = 30000;
+    private Integer socketTimeout = 60000;
 
     /**
      * 连接请求超时时间
