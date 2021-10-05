@@ -12,10 +12,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -160,10 +157,36 @@ public class SecurityUtils {
     }
 
 
+    private static final Random RANDOM = new SecureRandom();
+
+    /**
+     * 生成随机字符串，由数字、大小写字母组成，长度为<param>length</param>
+     * 不保证唯一,能指定长度
+     *
+     * @param length
+     * @return
+     */
+    public static String generateSecurityCode(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int c = RANDOM.nextInt(62);
+            if (c <= 9) {
+                sb.append(c);
+            } else if (c < 36) {
+                sb.append((char) ('a' + c - 10));
+            } else {
+                sb.append((char) ('A' + c - 36));
+            }
+        }
+        return sb.toString();
+    }
+
+
     /**
      * 盐 生成器（三位随机数 + 时间戳）
      * 前七位使用精确到毫秒的时间戳，转成 62 进制方式。7 位的 62 进制可以使用差不多 2080 年，基本足够用了。
      * 后三位使用随机数填充，碰撞概率为：1/238327。
+     * 基本保证唯一,不能指定长度
      */
     public static String generateSecurityCode() {
         try {
