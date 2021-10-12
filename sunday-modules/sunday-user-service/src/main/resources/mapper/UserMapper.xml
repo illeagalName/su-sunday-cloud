@@ -10,4 +10,23 @@
         where user_name = #{userName} limit 1
     </select>
 
+    <insert id="insertUser" parameterType="com.haier.user.domain.User">
+        insert into t_user (
+        <if test="userName != null and userName != '' ">user_name,</if>
+        <if test="password != null and password != '' ">password,</if>
+        <if test="nickName != null and nickName != '' ">nick_name,</if>
+        <if test="email != null and email != '' ">email,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
+        <if test="sex != null and sex != '' ">sex,</if>
+        <if test="avatar != null and avatar != '' ">avatar,</if>
+        )values(
+        <if test="userName != null and userName != ''">#{userName},</if>
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="nickName != null and nickName != ''">#{nickName},</if>
+        <if test="email != null and email != ''">#{email},</if>
+        <if test="phone != null and phone != ''">#{phone},</if>
+        <if test="sex != null and sex != ''">#{sex},</if>
+        <if test="avatar != null and avatar != ''">#{avatar},</if>
+        )
+    </insert>
 </mapper> 

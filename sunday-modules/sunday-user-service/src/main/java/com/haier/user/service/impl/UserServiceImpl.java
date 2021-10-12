@@ -7,6 +7,7 @@ import com.haier.user.domain.Role;
 import com.haier.user.domain.User;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
+import com.haier.user.vo.request.RegisterUserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,12 @@ public class UserServiceImpl implements UserService {
         List<Role> roles = roleMapper.listRolesByUserId(user.getUserId());
         vo.setRoleIds(roles.stream().map(Role::getRoleId).collect(Collectors.toList()));
         return vo;
+    }
+
+    @Override
+    public Boolean registerUser(RegisterUserVO request) {
+        User user = new User();
+        BeanUtils.copyProperties(request, user);
+        return userMapper.insertUser(user) > 0;
     }
 }

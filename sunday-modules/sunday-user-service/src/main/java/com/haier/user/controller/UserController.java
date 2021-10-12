@@ -1,15 +1,14 @@
 package com.haier.user.controller;
 
 import com.haier.core.domain.R;
+import com.haier.core.util.JsonUtils;
 import com.haier.core.util.SecurityUtils;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
+import com.haier.user.vo.request.RegisterUserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -33,4 +32,10 @@ public class UserController {
         return R.success(userService.selectUserByUserName(username));
     }
 
+    @PostMapping("register")
+    public R<Boolean> registerUser(@RequestBody RegisterUserVO request) {
+        log.info("参数：{}", JsonUtils.toString(request));
+        return R.success();
+//        return R.success(userService.registerUser(request));
+    }
 }
