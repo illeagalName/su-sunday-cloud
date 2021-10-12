@@ -40,8 +40,8 @@ public class AuthService {
 
     public R<Map<String, Object>> login(LoginUser loginUser) {
         // 判断loginUser的username和password的空值
-        AssertUtils.anyNotEmpty("用户名/密码不能为空", loginUser.getUsername(), loginUser.getPassword());
-        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUsername());
+        AssertUtils.anyNotEmpty("用户名/密码不能为空", loginUser.getUserName(), loginUser.getPassword());
+        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUserName());
         UserVO data = userInfo.getData();
         AssertUtils.notEmpty(data, userInfo.getMsg());
         AssertUtils.isTrue(Objects.equals(data.getStatus(), 0), "账号已被停用");
