@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -87,12 +85,12 @@ public class AuthService {
         user.setPassword("");
         user.setIpaddr(IpUtils.getIpAddr(ServletUtils.getRequest()));
         user.setLoginTime(LocalDateTime.now());
-        LocalDateTime expireTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime expireTime = DateUtils.toLocalDateTime(date);
         user.setExpireTime(expireTime);
         // 保存或更新用户token
         Map<String, Object> map = new HashMap<>();
         map.put("access_token", token);
-        map.put("expires_in", expireTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        map.put("expires_in", DateUtils.toUnix(expireTime));
         redisService.setObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + user.getUserId(), user, clientMap.getTime() - 1, TimeUnit.SECONDS);
         return map;
     }
