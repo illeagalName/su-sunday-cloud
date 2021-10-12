@@ -1,7 +1,6 @@
 package com.haier.user.controller;
 
 import com.haier.core.domain.R;
-import com.haier.core.util.JsonUtils;
 import com.haier.core.util.SecurityUtils;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
@@ -34,8 +33,6 @@ public class UserController {
 
     @PostMapping("register")
     public R<Boolean> registerUser(@RequestBody RegisterUserVO request) {
-        log.info("参数：{}", JsonUtils.toString(request));
-        return R.success();
-//        return R.success(userService.registerUser(request));
+        return R.success(userService.registerUser(request));
     }
 }

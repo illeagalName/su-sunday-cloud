@@ -1,5 +1,6 @@
 package com.haier.user.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.haier.user.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,8 +11,6 @@ import org.apache.ibatis.annotations.Param;
  * @Date 2021/9/20 20:56
  */
 @Mapper
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
     User selectUserByUserName(@Param("userName") String userName);
-
-    int insertUser(User user);
 }

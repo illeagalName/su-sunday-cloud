@@ -1,6 +1,7 @@
 package com.haier.user.service.impl;
 
 import com.haier.core.util.AssertUtils;
+import com.haier.core.util.SecurityUtils;
 import com.haier.user.dao.RoleMapper;
 import com.haier.user.dao.UserMapper;
 import com.haier.user.domain.Role;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -44,8 +46,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean registerUser(RegisterUserVO request) {
+        // 根据用户名先查询是否存在
+        User u = userMapper.selectUserByUserName(request.getUserName());
+        AssertUtils.isTrue(Objects.isNull(u), "用户名已存在");
+
         User user = new User();
         BeanUtils.copyProperties(request, user);
-        return userMapper.insertUser(user) > 0;
+        // 密码加密
+        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        return userMapper.insert(user) > 0;
     }
 }

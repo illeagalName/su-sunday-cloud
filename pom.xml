@@ -39,6 +39,7 @@
     <java.jwt.version>3.18.2</java.jwt.version>
     <elasticsearch.version>7.14.0</elasticsearch.version>
     <minio.version>8.2.1</minio.version>
+    <mybatis.plus.version>3.4.3</mybatis.plus.version>
   </properties>
 
 
@@ -177,6 +178,14 @@
         <artifactId>minio</artifactId>
         <version>${minio.version}</version>
       </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>${mybatis.plus.version}</version>
+      </dependency>
+
 
       <dependency>
         <groupId>com.haier</groupId>

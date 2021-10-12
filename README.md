@@ -19,7 +19,8 @@
 - **2021年10月05日 集成MinIO完成文件上传(模拟OSS)(8.3.0版本集成失败，改为了8.2.1)**
 - **TODO 2021年10月15日 继承HandlerMethodReturnValueHandler 返回统一格式**
 - **TODO 2021年10月25日 PreAuthorize Aspect权限校验**
-- **TODO 2021年10月30日 集成mybatis-plus简化xml的sql编写**
+- **2021年10月12日 集成mybatis-plus简化xml的sql编写**
+- **TODO 2021年10月30日 集成validate校验request参数**
 
 ##思路
 登录：用户登录后，生成的token是jwt格式，secret是动态生成的
@@ -38,3 +39,5 @@ Minio （最好集成8.2.1以下，8.3.0集成失败）
 访问路径：http://ip:9000/images/2021-10-05/3c675c96836646a9afb2eab6f3b2a492.jpg
 
 强烈谴责：我的服务器收到DDOS入侵，CPU和内存一直100%，远程连接不上，无奈重装了服务器的东西，法克。吐槽阿里云服务器，我啥都没干呢，刚租的服务器，各种问题，是不是变相向我推广杀毒安全服务呢
+
+2021年10月12日，通过su-sunday-vue实现注册接口了，vue还在学习中
