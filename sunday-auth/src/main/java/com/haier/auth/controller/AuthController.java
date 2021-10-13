@@ -6,7 +6,6 @@ import com.haier.core.domain.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -26,12 +25,12 @@ public class AuthController {
     }
 
     @DeleteMapping("logout")
-    public R<?> logout(HttpServletRequest request) {
-        return null;
+    public R<?> logout() {
+        return authService.logout();
     }
 
     @PostMapping("refresh")
-    public R<?> refresh(HttpServletRequest request) {
+    public R<?> refresh() {
         return null;
     }
 }

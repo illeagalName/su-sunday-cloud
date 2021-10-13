@@ -51,20 +51,27 @@ public class AuthService {
         return R.success(createToken(data));
     }
 
-    public void verify(String token) {
-        Base64.Decoder decoder = Base64.getDecoder();
-        String s = new String(decoder.decode(token.split("\\.")[1]), StandardCharsets.UTF_8);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, Object> map = objectMapper.readValue(s, new TypeReference<>() {
-            });
-            UserVO user = redisService.getObject(AUTHORIZATION_USER_TOKEN + map.get("clientId") + ":" + map.get("userId"));
-            boolean b = SecurityUtils.verifyToken(token, user.getSecret());
-            log.info("校验结果 {}", b);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public R<Boolean> logout() {
+        Long userId = SecurityUtils.getUserId();
+        String clientId = SecurityUtils.getClientId();
+        Boolean delete = redisService.delete(AUTHORIZATION_USER_TOKEN + clientId + ":" + userId);
+        return R.success(delete);
     }
+
+//    public void verify(String token) {
+//        Base64.Decoder decoder = Base64.getDecoder();
+//        String s = new String(decoder.decode(token.split("\\.")[1]), StandardCharsets.UTF_8);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            Map<String, Object> map = objectMapper.readValue(s, new TypeReference<>() {
+//            });
+//            UserVO user = redisService.getObject(AUTHORIZATION_USER_TOKEN + map.get("clientId") + ":" + map.get("userId"));
+//            boolean b = SecurityUtils.verifyToken(token, user.getSecret());
+//            log.info("校验结果 {}", b);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     private Map<String, Object> createToken(UserVO user) {
@@ -77,7 +84,7 @@ public class AuthService {
         AssertUtils.notEmpty(clientMap, "客户端标识不正确");
         // 生成token
         Date date = new Date(System.currentTimeMillis() + clientMap.getTime() * 1000);
-        String token = SecurityUtils.createToken(user.getUserId(), clientId, secret, date);
+        String token = SecurityUtils.createToken(user.getUserId(), clientId, secret, date, user.getUserName(), user.getNickName(), user.getSex());
 
         user.setClientId(clientId);
         user.setSecret(secret);
@@ -85,12 +92,10 @@ public class AuthService {
         user.setPassword("");
         user.setIpaddr(IpUtils.getIpAddr(ServletUtils.getRequest()));
         user.setLoginTime(LocalDateTime.now());
-        LocalDateTime expireTime = DateUtils.toLocalDateTime(date);
-        user.setExpireTime(expireTime);
+        user.setExpireTime(DateUtils.toLocalDateTime(date));
         // 保存或更新用户token
         Map<String, Object> map = new HashMap<>();
         map.put("access_token", token);
-        map.put("expires_in", DateUtils.toUnix(expireTime));
         redisService.setObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + user.getUserId(), user, clientMap.getTime() - 1, TimeUnit.SECONDS);
         return map;
     }

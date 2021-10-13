@@ -86,7 +86,7 @@ public class SecurityUtils {
      * @param date     过期时间
      * @return String
      */
-    public static String createToken(Long uniqueId, String clientId, String secret, Date date) {
+    public static String createToken(Long uniqueId, String clientId, String secret, Date date, String username, String nickname, Integer sex) {
         try {
             //秘钥及加密算法
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -96,6 +96,10 @@ public class SecurityUtils {
                     .withHeader(HEADER)
                     .withClaim("clientId", clientId)
                     .withClaim("uniqueId", uniqueId)
+                    .withClaim("username", username)
+                    .withClaim("nickname", nickname)
+                    .withClaim("sex", sex)
+                    .withIssuedAt(new Date())
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
