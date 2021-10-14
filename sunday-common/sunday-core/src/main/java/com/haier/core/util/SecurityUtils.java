@@ -3,6 +3,7 @@ package com.haier.core.util;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.UUID;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -80,27 +81,26 @@ public class SecurityUtils {
     /**
      * 创建token
      *
-     * @param uniqueId 唯一标识
-     * @param clientId 分组id
-     * @param secret   加密串
-     * @param date     过期时间
+     * @param payload 负载信息
+     * @param secret  加密串
+     * @param date    过期时间
      * @return String
      */
-    public static String createToken(Long uniqueId, String clientId, String secret, Date date, String username, String nickname, Integer sex) {
+    public static String createToken(Map<String, String> payload, String secret, Date date) {
         try {
             //秘钥及加密算法
             Algorithm algorithm = Algorithm.HMAC256(secret);
-
+            JWTCreator.Builder builder = JWT.create();
+            if (DataUtils.isNotEmpty(payload)) {
+                payload.forEach(builder::withClaim);
+            }
             //携带userId，userName信息，生成签名
-            return JWT.create()
+            return builder
                     .withHeader(HEADER)
-                    .withClaim("clientId", clientId)
-                    .withClaim("uniqueId", uniqueId)
-                    .withClaim("username", username)
-                    .withClaim("nickname", nickname)
-                    .withClaim("sex", sex)
                     .withIssuedAt(new Date())
                     .withExpiresAt(date)
+                    .withSubject("vip")
+                    .withIssuer("sunday")
                     .sign(algorithm);
         } catch (Exception e) {
             log.error("生成token异常", e);

@@ -84,7 +84,13 @@ public class AuthService {
         AssertUtils.notEmpty(clientMap, "客户端标识不正确");
         // 生成token
         Date date = new Date(System.currentTimeMillis() + clientMap.getTime() * 1000);
-        String token = SecurityUtils.createToken(user.getUserId(), clientId, secret, date, user.getUserName(), user.getNickName(), user.getSex());
+        String token = SecurityUtils.createToken(new HashMap<>() {{
+            put("username", user.getUserName());
+            put("nickname", user.getNickName());
+            put("uniqueId", user.getUserId() + "");
+            put("sex", user.getSex() + "");
+            put("avatar", user.getAvatar());
+        }}, secret, date);
 
         user.setClientId(clientId);
         user.setSecret(secret);
