@@ -90,6 +90,7 @@ public class AuthService {
             put("uniqueId", user.getUserId() + "");
             put("sex", user.getSex() + "");
             put("avatar", user.getAvatar());
+            put("clientId", clientId);
         }}, secret, date);
 
         user.setClientId(clientId);

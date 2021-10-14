@@ -11,6 +11,7 @@ import com.haier.core.util.StringUtils;
 import com.haier.gateway.properties.WhiteListProperties;
 import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -25,7 +26,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -42,8 +42,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     @Autowired
     RedisService redisService;
-
-    Base64.Decoder decoder = Base64.getDecoder();
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -88,7 +86,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     private String decode(String str) {
-        return new String(decoder.decode(str), StandardCharsets.UTF_8);
+        return new String(Base64.decodeBase64(str), StandardCharsets.UTF_8);
     }
 
     private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String msg) {
