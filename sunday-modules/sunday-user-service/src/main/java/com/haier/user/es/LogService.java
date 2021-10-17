@@ -5,13 +5,11 @@ import com.haier.elasticsearch.service.BaseEsService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -25,8 +23,9 @@ public class LogService extends BaseEsService {
     public Map<String, Object> get() {
         List<Map<String, Object>> items = new ArrayList<>();
         String format = DateUtils.toString(LocalDate.now(), "yyyy.MM.dd");
-        SearchResponse response = searchAll("sunday-log-" + format, 1, 30);
-        SearchHit[] hits = response.getHits().getHits();
+//        SearchResponse response = searchAll("sunday-log-" + format, 1, 30);
+        SearchResponse response = null;
+        SearchHit[] hits = Optional.ofNullable(response).map(SearchResponse::getHits).map(SearchHits::getHits).orElse(new SearchHit[0]);
         for (SearchHit hit : hits) {
             Map<String, Object> map = hit.getSourceAsMap();
             Map<String, Object> r = new HashMap<>();

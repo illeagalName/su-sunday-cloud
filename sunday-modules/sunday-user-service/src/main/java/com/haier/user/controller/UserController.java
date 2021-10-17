@@ -43,7 +43,7 @@ public class UserController {
     public R<?> getUserInfo1() {
         String username = SecurityUtils.getUsername();
         String data = "{\"roles\":[\"admin\"],\"introduction\":\"I am a super administrator\",\"avatar\":\"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif\",\"name\":\"Super Admin\"}";
-        Map<String, Object> stringObjectMap = JsonUtils.toObject(data, new TypeReference<Map<String, Object>>() {
+        Map<String, Object> stringObjectMap = JsonUtils.toObject(data, new TypeReference<>() {
         });
         return R.success(stringObjectMap);
 //        return R.success(userService.selectUserByUserName(username));
@@ -65,5 +65,10 @@ public class UserController {
     public R<?> listPermissions() {
         List<RouteVO> routes = userService.listRoutes();
         return R.success(routes);
+    }
+
+    @GetMapping("electricity")
+    public R<?> todayElectricity() {
+        return R.success(userService.todayElectricity());
     }
 }

@@ -16,4 +16,6 @@ public interface UserService {
     Boolean registerUser(RegisterUserVO request);
 
     List<RouteVO> listRoutes();
+
+    Object todayElectricity();
 }
