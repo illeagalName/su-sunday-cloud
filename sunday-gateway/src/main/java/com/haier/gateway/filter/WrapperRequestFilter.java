@@ -50,7 +50,7 @@ public class WrapperRequestFilter implements GlobalFilter, Ordered {
         HttpHeaders header = request.getHeaders();
         log.info("");
         log.info("***********************************请求信息**********************************");
-        log.info("请求request信息：URI = {}, path = {}，method = {}，header = {}。", URIPath, path, method, header);
+        log.info("请求request信息：URI = {}, path = {}，method = {}，header = {}", URIPath, path, method, header);
         if ("POST".equals(method) || "PUT".equals(method)) {
             Flux<DataBuffer> body = exchange.getRequest().getBody();
             return DataBufferUtils.join(body).map(dataBuffer -> {

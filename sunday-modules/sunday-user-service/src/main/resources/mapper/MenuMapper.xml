@@ -10,4 +10,10 @@
         where trm.role_id = #{roleId}
           and tm.status = 0
     </select>
+
+    <select id="listMenus" resultType="com.haier.user.domain.Menu">
+        select *
+        from t_menu
+        order by parent_id, menu_sort
+    </select>
 </mapper>

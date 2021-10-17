@@ -34,7 +34,7 @@ public class EsProperties {
     /**
      * 连接超时时间(毫秒)
      */
-    private Integer connectTimeout = 5000;
+    private Integer connectTimeout = 10000;
 
     /**
      * socket 超时时间
@@ -44,7 +44,7 @@ public class EsProperties {
     /**
      * 连接请求超时时间
      */
-    private Integer connectionRequestTimeout = 500;
+    private Integer connectionRequestTimeout = 2000;
 
     /**
      * 每个路由的最大连接数量

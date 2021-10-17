@@ -18,4 +18,6 @@ import java.util.List;
 @Mapper
 public interface MenuMapper {
     List<Menu> listMenusByRoleId(@Param("roleId") Long roleId);
+
+    List<Menu> listMenus();
 }

@@ -15,6 +15,10 @@ public class Menu {
      */
     private String menuName;
     /**
+     * 侧边栏和面包屑展示名称
+     */
+    private String menuTitle;
+    /**
      * 父id
      */
     private Long parentId;
@@ -63,4 +67,6 @@ public class Menu {
      * 菜单图标
      */
     private String icon;
+
+    private String redirect;
 }

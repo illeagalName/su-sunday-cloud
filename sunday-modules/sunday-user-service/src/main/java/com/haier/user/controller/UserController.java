@@ -1,10 +1,13 @@
 package com.haier.user.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.haier.core.domain.R;
+import com.haier.core.util.JsonUtils;
 import com.haier.core.util.SecurityUtils;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
 import com.haier.user.vo.request.RegisterUserVO;
+import com.haier.user.vo.response.RouteVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,51 +39,31 @@ public class UserController {
         return R.success(userService.selectUserByUserName(username));
     }
 
+    @GetMapping("info")
+    public R<?> getUserInfo1() {
+        String username = SecurityUtils.getUsername();
+        String data = "{\"roles\":[\"admin\"],\"introduction\":\"I am a super administrator\",\"avatar\":\"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif\",\"name\":\"Super Admin\"}";
+        Map<String, Object> stringObjectMap = JsonUtils.toObject(data, new TypeReference<Map<String, Object>>() {
+        });
+        return R.success(stringObjectMap);
+//        return R.success(userService.selectUserByUserName(username));
+    }
+
     @PostMapping("register")
     public R<Boolean> registerUser(@RequestBody RegisterUserVO request) {
         return R.success(userService.registerUser(request));
     }
 
-    @GetMapping("routes")
-    public R<?> listRoutes() {
-        Long userId = SecurityUtils.getUserId();
-        log.info("当前用户id {}", userId);
-        List<Map<String, Object>> routes = new ArrayList<>();
-        Map<String, Object> m1 = new HashMap<>();
-        m1.put("path", "/writing-demo");
-        m1.put("meta", new HashMap<>() {{
-            put("title", "Writing Demo");
-            put("icon", "eye-open");
-        }});
-        m1.put("component", "Layout");
-        m1.put("alwaysShow", true);
-        routes.add(m1);
+    @GetMapping("roles")
+    public R<?> listRoles() {
+        List<String> roles = new ArrayList<>();
+        roles.add("consumer");
+        return R.success(roles);
+    }
 
-
-        List<Map<String, Object>> children = new ArrayList<>();
-
-        m1.put("children", children);
-
-        Map<String, Object> m2 = new HashMap<>();
-        m2.put("path", "hook");
-        m2.put("meta", new HashMap<>() {{
-            put("title", "Hook-Demo");
-        }});
-        m2.put("component", "views/example/hook/Hook");
-        m2.put("name", "Hook");
-
-        children.add(m2);
-
-        Map<String, Object> m3 = new HashMap<>();
-        m3.put("path", "uex-use");
-        m3.put("meta", new HashMap<>() {{
-            put("title", "Vuex-Demo");
-        }});
-        m3.put("component", "views/example/vuex-use/VuexUse");
-        m3.put("name", "VuexUse");
-
-        children.add(m3);
-
+    @GetMapping("menus")
+    public R<?> listPermissions() {
+        List<RouteVO> routes = userService.listRoutes();
         return R.success(routes);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,15 +22,22 @@ import java.util.Map;
 @Slf4j
 public class LogService extends BaseEsService {
 
-    public List<Map<String, Object>> get() {
-        List<Map<String, Object>> result = new ArrayList<>();
+    public Map<String, Object> get() {
+        List<Map<String, Object>> items = new ArrayList<>();
         String format = DateUtils.toString(LocalDate.now(), "yyyy.MM.dd");
-        SearchResponse response = searchAll("sunday-log-" + format, 1, 10);
+        SearchResponse response = searchAll("sunday-log-" + format, 1, 30);
         SearchHit[] hits = response.getHits().getHits();
         for (SearchHit hit : hits) {
             Map<String, Object> map = hit.getSourceAsMap();
-            result.add(map);
+            Map<String, Object> r = new HashMap<>();
+            map.forEach((key, value) -> {
+                r.put(key.replaceFirst("@", ""), value);
+            });
+            items.add(r);
         }
+        Map<String, Object> result = new HashMap<>();
+        result.put("items", items);
+        result.put("total", items.size());
         return result;
     }
 }

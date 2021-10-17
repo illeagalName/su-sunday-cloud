@@ -1,8 +1,5 @@
 package com.haier.auth.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haier.api.user.domain.ClientVO;
 import com.haier.auth.domain.LoginUser;
 import com.haier.core.constant.CacheConstants;
@@ -15,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -40,8 +36,8 @@ public class AuthService {
 
     public R<Map<String, Object>> login(LoginUser loginUser) {
         // 判断loginUser的username和password的空值
-        AssertUtils.anyNotEmpty("用户名/密码不能为空", loginUser.getUserName(), loginUser.getPassword());
-        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUserName());
+        AssertUtils.anyNotEmpty("用户名/密码不能为空", loginUser.getUsername(), loginUser.getPassword());
+        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUsername());
         UserVO data = userInfo.getData();
         AssertUtils.notEmpty(data, userInfo.getMsg());
         AssertUtils.isTrue(Objects.equals(data.getStatus(), 0), "账号已被停用");
@@ -102,7 +98,7 @@ public class AuthService {
         user.setExpireTime(DateUtils.toLocalDateTime(date));
         // 保存或更新用户token
         Map<String, Object> map = new HashMap<>();
-        map.put("access_token", token);
+        map.put("token", token);
         redisService.setObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + user.getUserId(), user, clientMap.getTime() - 1, TimeUnit.SECONDS);
         return map;
     }

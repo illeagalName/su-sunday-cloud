@@ -24,7 +24,7 @@ public class SearchController {
 
     @GetMapping("all")
     public R<?> log() {
-        List<Map<String, Object>> maps = logService.get();
+        Map<String, Object> maps = logService.get();
         return R.success(maps);
     }
 }
