@@ -12,5 +12,4 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    User selectUserByUserName(@Param("userName") String userName);
 }

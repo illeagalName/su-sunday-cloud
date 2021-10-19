@@ -7,6 +7,7 @@ import com.haier.api.user.domain.UserVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -22,5 +23,5 @@ public interface RemoteUserService {
      * @return UserVO
      */
     @GetMapping(value = "/user/info/{username}")
-    R<UserVO> getUserInfo(@PathVariable("username") String username);
+    R<UserVO> getUserInfo(@PathVariable("username") String username, @RequestParam("password") String password);
 }

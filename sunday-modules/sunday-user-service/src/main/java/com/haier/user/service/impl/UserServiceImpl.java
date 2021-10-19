@@ -1,9 +1,11 @@
 package com.haier.user.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.haier.core.util.AssertUtils;
 import com.haier.core.util.HttpUtils;
 import com.haier.core.util.SecurityUtils;
+import com.haier.redis.service.RedisService;
 import com.haier.user.dao.MenuMapper;
 import com.haier.user.dao.RoleMapper;
 import com.haier.user.dao.UserMapper;
@@ -13,7 +15,8 @@ import com.haier.user.domain.User;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
 import com.haier.user.vo.request.RegisterUserVO;
-import com.haier.user.vo.response.RouteVO;
+import com.haier.user.vo.response.PersonalInfoVO;
+import com.haier.user.vo.response.MenuVO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +28,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.haier.core.constant.CacheConstants.AUTHORIZATION_USER_TOKEN;
 
 
 /**
@@ -46,25 +51,43 @@ public class UserServiceImpl implements UserService {
     @Autowired
     MenuMapper menuMapper;
 
+    @Autowired
+    RedisService redisService;
+
     @Value("${remote.service}")
     String remoteServiceUrl;
 
     @Override
-    public UserVO selectUserByUserName(String username) {
-        User user = userMapper.selectUserByUserName(username);
+    public UserVO selectUserByUserName(String username, String password) {
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        userWrapper.select("user_id,password,user_name,nick_name,email,phone,sex,avatar,status").eq("user_name", username);
+        User user = userMapper.selectOne(userWrapper);
         AssertUtils.notEmpty(user, "不存在用户：" + username);
+        AssertUtils.isTrue(SecurityUtils.matchesPassword(password, user.getPassword()), "密码不正确");
         // 先用BeanUtil 后面改为MapStruct
         UserVO vo = new UserVO();
         BeanUtils.copyProperties(user, vo);
         List<Role> roles = roleMapper.listRolesByUserId(user.getUserId());
-        vo.setRoleIds(roles.stream().map(Role::getRoleId).collect(Collectors.toList()));
+        vo.setRoles(roles.stream().map(Role::getSymbol).collect(Collectors.toList()));
         return vo;
+    }
+
+    @Override
+    public PersonalInfoVO getPersonalInfo() {
+        Long userId = SecurityUtils.getUserId();
+        String clientId = SecurityUtils.getClientId();
+        UserVO userVO = redisService.getObject(AUTHORIZATION_USER_TOKEN + clientId + ":" + userId);
+        PersonalInfoVO result = new PersonalInfoVO();
+        BeanUtils.copyProperties(userVO, result);
+        return result;
     }
 
     @Override
     public Boolean registerUser(RegisterUserVO request) {
         // 根据用户名先查询是否存在
-        User u = userMapper.selectUserByUserName(request.getUserName());
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        userWrapper.eq("username", request.getUserName());
+        User u = userMapper.selectOne(userWrapper);
         AssertUtils.isTrue(Objects.isNull(u), "用户名已存在");
 
         User user = new User();
@@ -75,20 +98,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<RouteVO> listRoutes() {
+    public List<MenuVO> listMenus() {
         // 严格排序
-        List<Menu> menus = menuMapper.listMenus();
+        QueryWrapper<Menu> menuWrapper = new QueryWrapper<>();
+        menuWrapper.orderByAsc("parent_id", "menu_sort");
+        List<Menu> menus = menuMapper.selectList(menuWrapper);
 
-        Map<Long, RouteVO> temp = new HashMap<>();
+        Map<Long, MenuVO> temp = new HashMap<>();
 
-        List<RouteVO> result = new ArrayList<>();
+        List<MenuVO> result = new ArrayList<>();
         menus.forEach(item -> {
-            RouteVO vo = new RouteVO();
+            MenuVO vo = new MenuVO();
             vo.setPath(item.getPath());
             vo.setComponent(item.getComponent());
             vo.setRedirect(item.getRedirect());
             vo.setName(item.getMenuName());
-            RouteVO.Meta meta = new RouteVO.Meta();
+            MenuVO.Meta meta = new MenuVO.Meta();
             meta.setIcon(item.getIcon());
             meta.setTitle(Objects.isNull(item.getMenuTitle()) ? item.getMenuName() : item.getMenuTitle());
             vo.setMeta(meta);
@@ -97,7 +122,7 @@ public class UserServiceImpl implements UserService {
             if (Objects.equals(parentId, 0L)) {
                 result.add(vo);
             } else {
-                RouteVO routeVO = temp.get(parentId);
+                MenuVO routeVO = temp.get(parentId);
                 routeVO.getChildren().add(vo);
             }
             temp.put(item.getMenuId(), vo);

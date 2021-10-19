@@ -2,7 +2,8 @@ package com.haier.user.service;
 
 import com.haier.api.user.domain.UserVO;
 import com.haier.user.vo.request.RegisterUserVO;
-import com.haier.user.vo.response.RouteVO;
+import com.haier.user.vo.response.PersonalInfoVO;
+import com.haier.user.vo.response.MenuVO;
 
 import java.util.List;
 
@@ -12,10 +13,13 @@ import java.util.List;
  * @Date 2021/9/20 20:29
  */
 public interface UserService {
-    UserVO selectUserByUserName(String username);
+    UserVO selectUserByUserName(String username, String password);
+
+    PersonalInfoVO getPersonalInfo();
+
     Boolean registerUser(RegisterUserVO request);
 
-    List<RouteVO> listRoutes();
+    List<MenuVO> listMenus();
 
     Object todayElectricity();
 }
