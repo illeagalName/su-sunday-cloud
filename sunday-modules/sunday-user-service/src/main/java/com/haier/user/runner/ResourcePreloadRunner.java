@@ -1,5 +1,6 @@
 package com.haier.user.runner;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.haier.api.user.domain.ClientVO;
 import com.haier.api.user.domain.MenuVO;
 import com.haier.api.user.domain.RoleVO;
@@ -53,7 +54,9 @@ public class ResourcePreloadRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         clearCache(CacheConstants.AUTHORIZATION_USER_ROLE + "*");
         log.info("加载角色菜单资源开始 {}", LocalDateTime.now());
-        List<Role> roles = roleMapper.listRoles();
+        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
+        roleWrapper.eq("status", 0).eq("is_delete", 0);
+        List<Role> roles = roleMapper.selectList(roleWrapper);
         roles.parallelStream().forEach(item -> {
             List<Menu> menus = menuMapper.listMenusByRoleId(item.getRoleId());
             RoleVO role = new RoleVO();

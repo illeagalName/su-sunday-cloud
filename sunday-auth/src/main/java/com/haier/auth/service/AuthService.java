@@ -37,12 +37,10 @@ public class AuthService {
     public R<Map<String, Object>> login(LoginUser loginUser) {
         // 判断loginUser的username和password的空值
         AssertUtils.anyNotEmpty("用户名/密码不能为空", loginUser.getUsername(), loginUser.getPassword());
-        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUsername());
+        R<UserVO> userInfo = remoteUserService.getUserInfo(loginUser.getUsername(), loginUser.getPassword());
         UserVO data = userInfo.getData();
         AssertUtils.notEmpty(data, userInfo.getMsg());
         AssertUtils.isTrue(Objects.equals(data.getStatus(), 0), "账号已被停用");
-        // 对比密码
-        AssertUtils.isTrue(SecurityUtils.matchesPassword(loginUser.getPassword(), data.getPassword()), "密码不正确");
         // 密码正确,创建token
         return R.success(createToken(data));
     }
@@ -53,21 +51,6 @@ public class AuthService {
         Boolean delete = redisService.delete(AUTHORIZATION_USER_TOKEN + clientId + ":" + userId);
         return R.success(delete);
     }
-
-//    public void verify(String token) {
-//        Base64.Decoder decoder = Base64.getDecoder();
-//        String s = new String(decoder.decode(token.split("\\.")[1]), StandardCharsets.UTF_8);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try {
-//            Map<String, Object> map = objectMapper.readValue(s, new TypeReference<>() {
-//            });
-//            UserVO user = redisService.getObject(AUTHORIZATION_USER_TOKEN + map.get("clientId") + ":" + map.get("userId"));
-//            boolean b = SecurityUtils.verifyToken(token, user.getSecret());
-//            log.info("校验结果 {}", b);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
     private Map<String, Object> createToken(UserVO user) {
@@ -81,18 +64,13 @@ public class AuthService {
         // 生成token
         Date date = new Date(System.currentTimeMillis() + clientMap.getTime() * 1000);
         String token = SecurityUtils.createToken(new HashMap<>() {{
-            put("username", user.getUserName());
-            put("nickname", user.getNickName());
             put("uniqueId", user.getUserId() + "");
-            put("sex", user.getSex() + "");
-            put("avatar", user.getAvatar());
             put("clientId", clientId);
         }}, secret, date);
 
         user.setClientId(clientId);
         user.setSecret(secret);
         user.setToken(token);
-        user.setPassword("");
         user.setIpaddr(IpUtils.getIpAddr(ServletUtils.getRequest()));
         user.setLoginTime(LocalDateTime.now());
         user.setExpireTime(DateUtils.toLocalDateTime(date));

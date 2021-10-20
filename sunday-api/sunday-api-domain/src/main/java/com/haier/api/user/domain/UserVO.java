@@ -18,10 +18,6 @@ public class UserVO {
      */
     private String userName;
     /**
-     * 密码
-     */
-    private String password;
-    /**
      * 用户名称
      */
     private String nickName;
@@ -68,9 +64,9 @@ public class UserVO {
     private LocalDateTime expireTime;
 
     /**
-     * 用户身上的角色id集合
+     * 用户身上的角色标识集合
      */
-    private List<Long> roleIds;
+    private List<String> roles;
 
     /**
      * 登录IP地址

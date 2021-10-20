@@ -1,5 +1,6 @@
 package com.haier.user.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.haier.user.domain.Role;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,8 +17,6 @@ import java.util.List;
  * @Version: 1.0
  */
 @Mapper
-public interface RoleMapper {
+public interface RoleMapper extends BaseMapper<Role> {
     List<Role> listRolesByUserId(@Param("userId") Long userId);
-
-    List<Role> listRoles();
 }

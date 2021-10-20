@@ -11,12 +11,12 @@ import java.util.List;
  * @Date 2021/10/16 20:01
  */
 @Data
-public class RouteVO {
+public class MenuVO {
     private String redirect;
     private String name;
     private String component;
     private String path;
-    private List<RouteVO> children = new ArrayList<>();
+    private List<MenuVO> children = new ArrayList<>();
     private Meta meta;
 
     @Data

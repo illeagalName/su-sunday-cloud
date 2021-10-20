@@ -17,9 +17,10 @@
             <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
-    <select id="selectUserByUserName" resultMap="BaseResultMap">
-        select *
-        from t_user
-        where user_name = #{userName} limit 1
-    </select>
+    <sql id="Base_Column_List">
+        user_id,user_name,password,
+        nick_name,email,phone,
+        sex,avatar,status,
+        is_delete
+    </sql>
 </mapper>

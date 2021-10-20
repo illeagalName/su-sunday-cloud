@@ -1,19 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.haier.user.dao.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.haier.user.domain.Menu">
+            <id property="menuId" column="menu_id" jdbcType="BIGINT"/>
+            <result property="menuTitle" column="menu_title" jdbcType="VARCHAR"/>
+            <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+            <result property="menuSort" column="menu_sort" jdbcType="INTEGER"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="redirect" column="redirect" jdbcType="VARCHAR"/>
+            <result property="isFrame" column="is_frame" jdbcType="TINYINT"/>
+            <result property="menuType" column="menu_type" jdbcType="CHAR"/>
+            <result property="visible" column="visible" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="symbol" column="symbol" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        menu_id,menu_title,menu_name,
+        parent_id,menu_sort,path,
+        component,redirect,is_frame,
+        menu_type,visible,status,
+        symbol,icon
+    </sql>
+
     <select id="listMenusByRoleId" resultType="com.haier.user.domain.Menu">
         select tm.*
         from t_menu tm
                  inner join t_role_menu trm on tm.menu_id = trm.menu_id
         where trm.role_id = #{roleId}
           and tm.status = 0
-    </select>
-
-    <select id="listMenus" resultType="com.haier.user.domain.Menu">
-        select *
-        from t_menu
-        order by parent_id, menu_sort
     </select>
 </mapper>
