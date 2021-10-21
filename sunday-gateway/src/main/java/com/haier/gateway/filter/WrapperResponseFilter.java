@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -48,11 +49,14 @@ public class WrapperResponseFilter implements GlobalFilter, Ordered {
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 if (Objects.equals(getStatusCode(), HttpStatus.OK) && body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = Flux.from(body);
-                    return super.writeWith(fluxBody.map(dataBuffer -> {
-                        byte[] content = new byte[dataBuffer.readableByteCount()];
-                        dataBuffer.read(content);
+                    return super.writeWith(fluxBody.buffer().map(dataBuffer -> {
+                        // 响应数据过大时会分批打印，需要用join
+                        DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
+                        DataBuffer joinBuffer = dataBufferFactory.join(dataBuffer);
+                        byte[] content = new byte[joinBuffer.readableByteCount()];
+                        joinBuffer.read(content);
                         //释放掉内存
-                        DataBufferUtils.release(dataBuffer);
+                        DataBufferUtils.release(joinBuffer);
                         //responseData就是下游系统返回的内容,可以查看修改
                         String responseData = new String(content, StandardCharsets.UTF_8);
                         WebFluxSleuthOperators.withSpanInScope(tracer, currentTraceContext, exchange, () -> {
@@ -60,8 +64,7 @@ public class WrapperResponseFilter implements GlobalFilter, Ordered {
                             log.info("响应内容:{}", responseData);
                             log.info("****************************************************************************\n");
                         });
-                        byte[] uppedContent = responseData.getBytes(StandardCharsets.UTF_8);
-                        return bufferFactory.wrap(uppedContent);
+                        return bufferFactory.wrap(content);
                     }));
                 } else {
                     log.error("响应code异常:{}", getStatusCode());

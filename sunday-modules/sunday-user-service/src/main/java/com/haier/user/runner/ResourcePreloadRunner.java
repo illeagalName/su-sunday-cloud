@@ -67,7 +67,9 @@ public class ResourcePreloadRunner implements ApplicationRunner {
         });
 
         clearCache(CacheConstants.AUTHORIZATION_USER_MENU + "*");
-        List<Menu> menus = menuMapper.listMenus();
+        QueryWrapper<Menu> menuWrapper = new QueryWrapper<>();
+        menuWrapper.orderByAsc("parent_id", "menu_sort");
+        List<Menu> menus = menuMapper.selectList(menuWrapper);
         menus.forEach(item -> {
             MenuVO menu = new MenuVO();
             BeanUtils.copyProperties(item, menu);

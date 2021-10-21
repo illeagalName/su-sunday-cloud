@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sunday-user-service</module>
+        <module>sunday-system-service</module>
     </modules>
 
     <properties>
