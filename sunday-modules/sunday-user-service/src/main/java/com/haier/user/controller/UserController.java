@@ -45,9 +45,4 @@ public class UserController {
         List<MenuVO> menus = userService.listMenus();
         return R.success(menus);
     }
-
-    @GetMapping("electricity")
-    public R<?> todayElectricity() {
-        return R.success(userService.todayElectricity());
-    }
 }

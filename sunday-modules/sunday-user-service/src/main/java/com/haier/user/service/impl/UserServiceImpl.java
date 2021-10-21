@@ -1,9 +1,7 @@
 package com.haier.user.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.haier.core.util.AssertUtils;
-import com.haier.core.util.HttpUtils;
 import com.haier.core.util.SecurityUtils;
 import com.haier.redis.service.RedisService;
 import com.haier.user.dao.MenuMapper;
@@ -17,15 +15,12 @@ import com.haier.api.user.domain.UserVO;
 import com.haier.user.vo.request.RegisterUserVO;
 import com.haier.user.vo.response.PersonalInfoVO;
 import com.haier.user.vo.response.MenuVO;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,9 +48,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RedisService redisService;
-
-    @Value("${remote.service}")
-    String remoteServiceUrl;
 
     @Override
     public UserVO selectUserByUserName(String username, String password) {
@@ -130,21 +122,4 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    @Override
-    public Object todayElectricity() {
-        String url = remoteServiceUrl + "/system/use/groupByPeriod";
-        Map<String, Object> params = new HashMap<>();
-        params.put("buildingId", 1);
-        params.put("period", 1);
-        params.put("energyType", 1);
-        String s = HttpUtils.doGet(url, params);
-        JSONObject jsonObject = JSONObject.parseObject(s);
-        return jsonObject.getJSONArray("data");
-    }
-
-    @Data
-    public static class UsedVO {
-        private String subscript;
-        private BigDecimal used;
-    }
 }

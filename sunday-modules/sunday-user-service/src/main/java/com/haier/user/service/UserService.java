@@ -20,6 +20,4 @@ public interface UserService {
     Boolean registerUser(RegisterUserVO request);
 
     List<MenuVO> listMenus();
-
-    Object todayElectricity();
 }

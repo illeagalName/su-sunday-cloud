@@ -78,10 +78,6 @@
             <groupId>com.haier</groupId>
             <artifactId>sunday-redis</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.haier</groupId>
-            <artifactId>sunday-minio</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>

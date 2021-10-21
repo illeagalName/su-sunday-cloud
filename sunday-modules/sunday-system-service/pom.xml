@@ -51,5 +51,19 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-minio</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-elasticsearch</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package com.haier.user.file;
+package com.haier.system.file;
 
 import com.haier.minio.service.BaseMinioService;
 import lombok.extern.slf4j.Slf4j;

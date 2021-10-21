@@ -1,9 +1,8 @@
-package com.haier.user.controller;
+package com.haier.system.controller;
 
 import com.haier.core.domain.R;
-import com.haier.user.file.FileService;
+import com.haier.system.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
