@@ -1,9 +1,9 @@
 package com.haier.ratelimiter.aspect;
 
-import cn.hutool.core.util.StrUtil;
 import com.haier.core.util.IpUtils;
 import com.haier.core.util.ServletUtils;
 import com.haier.ratelimiter.annotation.RateLimiter;
+import com.haier.ratelimiter.exception.RateLimiterException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -45,7 +45,7 @@ public class RateLimiterAspect implements InitializingBean {
 
     private final static String REDIS_LIMIT_KEY_PREFIX = "sunday:limit:";
 
-    private final Codec codec = new StringCodec(StandardCharsets.UTF_8);
+    private final Codec STRING_CODEC = new StringCodec(StandardCharsets.UTF_8);
 
     @Around("@annotation(com.haier.ratelimiter.annotation.RateLimiter)")
     public Object pointcut(ProceedingJoinPoint point) throws Throwable {
@@ -56,7 +56,6 @@ public class RateLimiterAspect implements InitializingBean {
         if (Objects.nonNull(rateLimiter)) {
             // key-  (自定义key 或 类名.方法名):ip地址
             String key = Optional.ofNullable(rateLimiter.key()).filter(s -> !Objects.equals(s, "")).orElseGet(() -> method.getDeclaringClass().getName().concat(".").concat(method.getName())).concat(":").concat(IpUtils.getIpAddr(ServletUtils.getRequest()));
-            log.info("===================== {}", key);
             // 限流最大值
             long max = rateLimiter.max();
             // 时效
@@ -64,7 +63,7 @@ public class RateLimiterAspect implements InitializingBean {
             TimeUnit timeUnit = rateLimiter.timeUnit();
             boolean limited = shouldLimited(key, max, timeout, timeUnit);
             if (limited) {
-                throw new RuntimeException("手速太快了，慢点儿吧~");
+                throw new RateLimiterException("手速太快了，慢点儿吧~");
             }
         }
 
@@ -85,21 +84,21 @@ public class RateLimiterAspect implements InitializingBean {
         keys.add(finalKey);
         // command arguments must be strings or integers
 
-        Object[] values = new Object[]{String.valueOf(now), String.valueOf(ttl), String.valueOf(expired), String.valueOf(max)};
+        Object[] values = new Object[]{now, ttl, expired, max};
         Long executeTimes;
         if (Objects.nonNull(sha)) {
-            executeTimes = redissonClient.getScript(codec)
+            executeTimes = redissonClient.getScript(STRING_CODEC)
                     .evalSha(RScript.Mode.READ_WRITE, sha, RScript.ReturnType.INTEGER, keys, values);
         } else {
-            executeTimes = redissonClient.getScript(codec)
+            executeTimes = redissonClient.getScript(STRING_CODEC)
                     .eval(RScript.Mode.READ_WRITE, RedisLua.RATE_LIMITER_SCRIPT, RScript.ReturnType.INTEGER, keys, values);
         }
         if (Objects.nonNull(executeTimes)) {
             if (executeTimes == 0) {
-                log.error("【{}】在单位时间 {} 毫秒内已达到访问上限，当前接口上限 {}", key, ttl, max);
+                log.error("【{}】在时间 {} 毫秒内已达到访问上限，当前接口上限 {}", key, ttl, max);
                 return true;
             } else {
-                log.info("【{}】在单位时间 {} 毫秒内访问 {} 次", key, ttl, executeTimes);
+                log.info("【{}】在时间 {} 毫秒内访问 {} 次", key, ttl, executeTimes);
                 return false;
             }
         }
@@ -109,6 +108,7 @@ public class RateLimiterAspect implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         sha = redissonClient.getScript().scriptLoad(RedisLua.RATE_LIMITER_SCRIPT);
+        log.info("加载lua script【RedisLua.RATE_LIMITER_SCRIPT】成功");
     }
 
     static class RedisLua {
