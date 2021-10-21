@@ -11,12 +11,15 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
+import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +44,8 @@ public class RateLimiterAspect implements InitializingBean {
     private String sha;
 
     private final static String REDIS_LIMIT_KEY_PREFIX = "sunday:limit:";
+
+    private final Codec codec = new StringCodec(StandardCharsets.UTF_8);
 
     @Around("@annotation(com.haier.ratelimiter.annotation.RateLimiter)")
     public Object pointcut(ProceedingJoinPoint point) throws Throwable {
@@ -81,14 +86,13 @@ public class RateLimiterAspect implements InitializingBean {
         // command arguments must be strings or integers
 
         Object[] values = new Object[]{String.valueOf(now), String.valueOf(ttl), String.valueOf(expired), String.valueOf(max)};
-        Object[] vals = Arrays.copyOf(values, values.length, Object[].class);
-        Integer executeTimes;
+        Long executeTimes;
         if (Objects.nonNull(sha)) {
-            executeTimes = redissonClient.getScript()
-                    .evalSha(RScript.Mode.READ_WRITE, sha, RScript.ReturnType.INTEGER, keys, vals);
+            executeTimes = redissonClient.getScript(codec)
+                    .evalSha(RScript.Mode.READ_WRITE, sha, RScript.ReturnType.INTEGER, keys, values);
         } else {
-            executeTimes = redissonClient.getScript()
-                    .eval(RScript.Mode.READ_WRITE, RedisLua.RATE_LIMITER_SCRIPT, RScript.ReturnType.INTEGER, keys, vals);
+            executeTimes = redissonClient.getScript(codec)
+                    .eval(RScript.Mode.READ_WRITE, RedisLua.RATE_LIMITER_SCRIPT, RScript.ReturnType.INTEGER, keys, values);
         }
         if (Objects.nonNull(executeTimes)) {
             if (executeTimes == 0) {
