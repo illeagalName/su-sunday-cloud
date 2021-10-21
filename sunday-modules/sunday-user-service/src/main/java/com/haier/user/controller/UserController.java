@@ -1,6 +1,7 @@
 package com.haier.user.controller;
 
 import com.haier.core.domain.R;
+import com.haier.ratelimiter.annotation.RateLimiter;
 import com.haier.user.service.UserService;
 import com.haier.api.user.domain.UserVO;
 import com.haier.user.vo.request.RegisterUserVO;
@@ -31,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("info")
+    @RateLimiter(value = 3)
     public R<PersonalInfoVO> getPersonalInfo() {
         return R.success(userService.getPersonalInfo());
     }
