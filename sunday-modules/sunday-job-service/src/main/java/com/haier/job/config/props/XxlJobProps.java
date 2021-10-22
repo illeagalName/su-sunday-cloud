@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Version: 1.0
  */
 @Data
-@ConfigurationProperties(prefix = "xxl.job")
+@ConfigurationProperties(prefix = "xxl.job.config")
 public class XxlJobProps {
 
     /**
@@ -30,6 +30,8 @@ public class XxlJobProps {
      * 与调度中心交互的accessToken
      */
     private String accessToken;
+
+    private String loginIdentityKey;
 
     @Data
     public static class XxlJobAdminProps {

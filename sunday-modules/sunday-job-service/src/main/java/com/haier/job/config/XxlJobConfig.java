@@ -1,6 +1,7 @@
 package com.haier.job.config;
 
 import com.haier.job.config.props.XxlJobProps;
+import com.haier.job.config.props.XxlJobUser;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,7 +21,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(XxlJobProps.class)
+@EnableConfigurationProperties({XxlJobProps.class, XxlJobUser.class})
 public class XxlJobConfig {
 
     @Resource

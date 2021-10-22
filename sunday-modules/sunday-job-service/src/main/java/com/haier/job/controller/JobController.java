@@ -2,17 +2,20 @@ package com.haier.job.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Maps;
-import com.haier.core.util.HttpUtils;
 import com.haier.job.config.props.XxlJobProps;
+import com.haier.job.config.props.XxlJobUser;
+import com.haier.job.util.XxlJobCookieUtils;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Cookie;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +34,10 @@ public class JobController {
 
     @Resource
     XxlJobProps props;
+
+    @Resource
+    XxlJobUser user;
+
     private final static String JOB_INFO_URI = "/jobinfo";
     private final static String JOB_GROUP_URI = "/jobgroup";
 
@@ -43,7 +50,9 @@ public class JobController {
         Map<String, Object> jobInfo = Maps.newHashMap();
         jobInfo.put("start", start);
         jobInfo.put("length", length);
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_GROUP_URI + "/pageList", jobInfo);
+
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_GROUP_URI + "/pageList", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -64,7 +73,8 @@ public class JobController {
         jobInfo.put("jobGroup", 2);
         jobInfo.put("triggerStatus", -1);
 
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/pageList", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/pageList", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -84,8 +94,8 @@ public class JobController {
         jobInfo.put("executorParam", "手动添加的任务的参数");
         jobInfo.put("executorBlockStrategy", ExecutorBlockStrategyEnum.SERIAL_EXECUTION);
         jobInfo.put("glueType", GlueTypeEnum.BEAN);
-
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/add", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/add", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -99,7 +109,8 @@ public class JobController {
         jobInfo.put("id", 4);
         jobInfo.put("executorParam", JSONUtil.toJsonStr(jobInfo));
 
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/trigger", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/trigger", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -112,7 +123,8 @@ public class JobController {
         Map<String, Object> jobInfo = Maps.newHashMap();
         jobInfo.put("id", 4);
 
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/remove", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/remove", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -125,7 +137,8 @@ public class JobController {
         Map<String, Object> jobInfo = Maps.newHashMap();
         jobInfo.put("id", 4);
 
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/stop", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/stop", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
@@ -138,8 +151,11 @@ public class JobController {
         Map<String, Object> jobInfo = Maps.newHashMap();
         jobInfo.put("id", 4);
 
-        String execute = HttpUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/start", jobInfo);
+        List<Cookie> cookie = XxlJobCookieUtils.getCookie(props.getAdmin().getAddress(), props.getLoginIdentityKey(), user);
+        String execute = XxlJobCookieUtils.doGet(props.getAdmin().getAddress() + JOB_INFO_URI + "/start", jobInfo, cookie);
         log.info("【execute】= {}", execute);
         return execute;
     }
+
+
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 2021/10/17 14:40
  */
 public class HttpUtils {
-    private static final OkHttpClient client =
+    public static final OkHttpClient COMMON_CLIENT =
             new OkHttpClient.Builder()
                     .connectTimeout(10, TimeUnit.SECONDS)
                     .writeTimeout(10, TimeUnit.SECONDS)
@@ -123,7 +123,7 @@ public class HttpUtils {
         HttpUrl httpUrl = createHttpUrl(request, params);
         builder.url(httpUrl).build();
 
-        return client.newCall(builder.build());
+        return COMMON_CLIENT.newCall(builder.build());
     }
 
     /**
@@ -138,7 +138,7 @@ public class HttpUtils {
                 .post(createFormBody(params))
                 .url(url)
                 .build();
-        return client.newCall(request);
+        return COMMON_CLIENT.newCall(request);
     }
 
     /**
@@ -153,7 +153,7 @@ public class HttpUtils {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .url(url)
                 .build();
-        return client.newCall(request);
+        return COMMON_CLIENT.newCall(request);
     }
 
 
@@ -210,4 +210,6 @@ public class HttpUtils {
         }
         return respStr;
     }
+
+
 }
