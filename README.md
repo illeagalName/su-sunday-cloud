@@ -38,5 +38,5 @@ Minio （最好集成8.2.1以下，8.3.0集成失败）
 2021年10月12日，通过su-sunday-vue实现注册接口了，vue还在学习中
 
 
-xxl-job-admin集成后，数据可以读取，但是需要在admin里JobGroupController和JobInfoController部分接口添加@PermissionLimit(limit = false)，这也需要我们保证admin的运行安全问题
+xxl-job-admin集成后，数据可以读取，但是需要在admin里JobGroupController和JobInfoController部分接口添加@PermissionLimit(limit = false)，这也需要我们保证admin的运行安全问题(或者处理cookie里的XXL_JOB_LOGIN_IDENTITY)
 案例提供的去除校验接口为/jobgroup/pageList、/jobinfo/pageList\add\update\remove\stop\start\trigger
