@@ -41,7 +41,7 @@ public class RateLimiterAspect implements InitializingBean {
     @Autowired
     RedissonClient redissonClient;
 
-    private String sha;
+    private String rateLimitLuaSha;
 
     private final static String REDIS_LIMIT_KEY_PREFIX = "sunday:limit:";
 
@@ -86,9 +86,9 @@ public class RateLimiterAspect implements InitializingBean {
 
         Object[] values = new Object[]{now, ttl, expired, max};
         Long executeTimes;
-        if (Objects.nonNull(sha)) {
+        if (Objects.nonNull(rateLimitLuaSha)) {
             executeTimes = redissonClient.getScript(STRING_CODEC)
-                    .evalSha(RScript.Mode.READ_WRITE, sha, RScript.ReturnType.INTEGER, keys, values);
+                    .evalSha(RScript.Mode.READ_WRITE, rateLimitLuaSha, RScript.ReturnType.INTEGER, keys, values);
         } else {
             executeTimes = redissonClient.getScript(STRING_CODEC)
                     .eval(RScript.Mode.READ_WRITE, RedisLua.RATE_LIMITER_SCRIPT, RScript.ReturnType.INTEGER, keys, values);
@@ -107,7 +107,7 @@ public class RateLimiterAspect implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        sha = redissonClient.getScript().scriptLoad(RedisLua.RATE_LIMITER_SCRIPT);
+        rateLimitLuaSha = redissonClient.getScript().scriptLoad(RedisLua.RATE_LIMITER_SCRIPT);
         log.info("加载lua script【RedisLua.RATE_LIMITER_SCRIPT】成功");
     }
 
@@ -115,24 +115,21 @@ public class RateLimiterAspect implements InitializingBean {
         public static final String RATE_LIMITER_SCRIPT;
 
         static {
-            StringBuilder sb = new StringBuilder();
-            sb.append("local key = KEYS[1];");
-            sb.append("local now = tonumber(ARGV[1]);");
-            sb.append("local ttl = tonumber(ARGV[2]);");
-            sb.append("local expired = tonumber(ARGV[3]);");
-            sb.append("local max = tonumber(ARGV[4]);");
-            sb.append("redis.call('zremrangebyscore', key, 0, expired);");
-            sb.append("local current = tonumber(redis.call('zcard', key));");
-            sb.append("local next = current + 1;");
-            sb.append("if next > max then");
-            sb.append("  return 0;");
-            sb.append("else");
-            sb.append("  redis.call('zadd', key, now, now);");
-            sb.append("  redis.call('pexpire', key, ttl);");
-            sb.append("  return next;");
-            sb.append("end;");
-
-            RATE_LIMITER_SCRIPT = sb.toString();
+            RATE_LIMITER_SCRIPT = "local key = KEYS[1];" +
+                    "local now = tonumber(ARGV[1]);" +
+                    "local ttl = tonumber(ARGV[2]);" +
+                    "local expired = tonumber(ARGV[3]);" +
+                    "local max = tonumber(ARGV[4]);" +
+                    "redis.call('zremrangebyscore', key, 0, expired);" +
+                    "local current = tonumber(redis.call('zcard', key));" +
+                    "local next = current + 1;" +
+                    "if next > max then" +
+                    "  return 0;" +
+                    "else" +
+                    "  redis.call('zadd', key, now, now);" +
+                    "  redis.call('pexpire', key, ttl);" +
+                    "  return next;" +
+                    "end;";
         }
     }
 }

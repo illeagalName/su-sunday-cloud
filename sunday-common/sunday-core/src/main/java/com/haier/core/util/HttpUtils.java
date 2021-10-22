@@ -28,6 +28,17 @@ public class HttpUtils {
     /**
      * 发起Get请求
      *
+     * @param url url
+     * @return 响应结果
+     */
+    public static String doGet(String url) {
+        Call call = createGetCall(url, null);
+        return execute(call);
+    }
+
+    /**
+     * 发起Get请求
+     *
      * @param url    url
      * @param params 参数
      * @return 响应结果
