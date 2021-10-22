@@ -13,6 +13,7 @@
 - **2021年09月26日 集成logstash将日志打入ES中**
 - **2021年10月02日 集成Rest High Level Client 简单实现查询并输出数据**
 - **2021年10月05日 集成MinIO完成文件上传(模拟OSS)(8.3.0版本集成失败，改为了8.2.1)**
+- **2021年10月22日 集成xxl-job-core，定时任务界面需要重新开发**
 - **TODO 2021年10月15日 继承HandlerMethodReturnValueHandler 返回统一格式**
 - **TODO 2021年10月25日 PreAuthorize Aspect权限校验**
 - **2021年10月12日 集成mybatis-plus简化xml的sql编写**
