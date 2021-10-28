@@ -9,7 +9,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20000:20000"
   sunday-auth:
@@ -21,7 +21,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20001:20001"
   sunday-job-service:
@@ -33,7 +33,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20004:20004"
   sunday-user-service:
@@ -45,7 +45,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20002:20002"
   sunday-system-service:
@@ -57,7 +57,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20003:20003"
   sunday-bot-service:
@@ -69,7 +69,7 @@ services:
     environment:
       LANG: "C.UTF-8"
     volumes:
-      - /Users/yangwendong/logs/sunday:/Users/yangwendong/logs/sunday
+      - /usr/local/java/logs/sunday:/usr/local/java/logs/sunday
     ports:
       - "20005:20005"
 
