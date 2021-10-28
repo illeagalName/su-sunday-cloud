@@ -70,6 +70,10 @@
             <groupId>com.haier</groupId>
             <artifactId>sunday-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-api-bot</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.xuxueli</groupId>

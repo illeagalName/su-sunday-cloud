@@ -1,5 +1,7 @@
 package com.haier.job;
 
+import com.haier.core.annotation.Enable7CustomConfig;
+import com.haier.core.annotation.Enable7FeignClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -13,6 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Version: 1.0
  */
 @SpringBootApplication
+@Enable7FeignClients
+@Enable7CustomConfig
 public class JobApplication {
     public static void main(String[] args) {
         SpringApplication.run(JobApplication.class, args);

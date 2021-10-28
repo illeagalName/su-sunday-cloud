@@ -9,5 +9,6 @@ public class ServiceNameConstants {
      * auth服务
      */
     public static final String AUTH_SERVICE = "auth-service";
+    public static final String BOT_SERVICE = "bot-service";
 
 }

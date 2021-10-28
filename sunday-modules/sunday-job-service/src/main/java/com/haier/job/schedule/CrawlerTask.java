@@ -3,6 +3,7 @@ package com.haier.job.schedule;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.haier.api.bot.RemoteBotService;
 import com.haier.core.util.DataUtils;
 import com.haier.core.util.HttpUtils;
 import com.haier.core.util.StringUtils;
@@ -11,6 +12,7 @@ import com.haier.job.mapper.HitokotoMapper;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -34,13 +36,21 @@ public class CrawlerTask {
     String hitokotoUrl;
 
 
-    @Autowired
-    HitokotoMapper hitokotoMapper;
+    final HitokotoMapper hitokotoMapper;
+
+
+    final RemoteBotService remoteBotService;
+
 
     /**
      * hitokoto(一言)、en(中英文)、social(社会语录)、soup(毒鸡汤)、fart(彩虹屁)、zha(渣男语录)
      */
-    final List<String> HITOKOTO_TYPES = Lists.newArrayList("hitokoto", "en", "social", "soup", "fart", "zha");
+    final List<Pair<String, String>> HITOKOTO_TYPES = Lists.newArrayList(Pair.of("一言", "hitokoto"), Pair.of("中英文", "en"), Pair.of("社会语录", "social"), Pair.of("毒鸡汤", "soup"), Pair.of("彩虹屁", "fart"), Pair.of("渣男语录", "zha"));
+
+    public CrawlerTask(HitokotoMapper hitokotoMapper, RemoteBotService remoteBotService) {
+        this.hitokotoMapper = hitokotoMapper;
+        this.remoteBotService = remoteBotService;
+    }
 
     @XxlJob("getHitokotoInfo")
     public void getHitokotoInfo() {
@@ -61,9 +71,12 @@ public class CrawlerTask {
             if (Objects.nonNull(result) && Objects.equals(result.getInteger("code"), 200)) {
                 String content = result.getString("content");
                 Hitokoto hitokoto = new Hitokoto();
-                hitokoto.setType(type);
+                hitokoto.setType(type.getRight());
                 hitokoto.setContent(content);
                 hitokotos.add(hitokoto);
+                log.info("开始发送bot");
+                remoteBotService.sendMessage(type.getLeft().concat(" - ").concat(content));
+                log.info("发送bot结束");
             }
             XxlJobHelper.log("type : {} 异常", type);
         });
