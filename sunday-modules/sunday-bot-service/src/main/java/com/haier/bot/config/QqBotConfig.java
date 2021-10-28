@@ -40,7 +40,7 @@ public class QqBotConfig {
     public Bot bot(QqProperties qqProperties) {
         Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qqProperties.getAccount()), qqProperties.getPassword(), new BotConfiguration() {{
             setWorkingDir(new File(qqProperties.getDirectory()));
-            fileBasedDeviceInfo(); // 使用 device.json 存储设备信息
+            fileBasedDeviceInfo("device.json"); // 使用 device.json 存储设备信息
             setProtocol(MiraiProtocol.ANDROID_PHONE); // 切换协议
             redirectNetworkLogToFile();
             redirectNetworkLogToDirectory();
