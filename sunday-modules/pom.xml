@@ -15,6 +15,7 @@
         <module>sunday-user-service</module>
         <module>sunday-system-service</module>
         <module>sunday-job-service</module>
+        <module>sunday-bot-service</module>
     </modules>
 
     <properties>
