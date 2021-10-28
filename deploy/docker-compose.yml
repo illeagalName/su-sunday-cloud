@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+  sunday-gateway:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-gateway
+    image: sunday-gateway
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20000:20000"
+  sunday-auth:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-auth
+    image: sunday-auth
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20001:20001"
+  sunday-job-service:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-job-service
+    image: sunday-job-service
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20004:20004"
+  sunday-user-service:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-user-service
+    image: sunday-user-service
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20002:20002"
+  sunday-system-service:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-system-service
+    image: sunday-system-service
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20003:20003"
+  sunday-bot-service:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./webapp/sunday-bot-service
+    image: sunday-bot-service
+    environment:
+      LANG: "C.UTF-8"
+    volumes:
+      - /usr/logs/sunday:/usr/logs/sunday
+    ports:
+      - "20005:20005"
+
+
+                                                    

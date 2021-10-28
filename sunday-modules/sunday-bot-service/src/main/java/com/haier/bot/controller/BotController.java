@@ -34,7 +34,7 @@ public class BotController {
     @GetMapping("send")
     public Map<String, String> sendMessage() {
         Map<String, String> resultMap = new HashMap<>();
-        MessageReceipt<Group> messageReceipt = Objects.requireNonNull(bot.getGroup(11111111)).sendMessage(new PlainText("hello,我是机器人，来打我啊"));
+        MessageReceipt<Group> messageReceipt = Objects.requireNonNull(bot.getGroup(111)).sendMessage(new PlainText("hello,我是机器人，来打我啊"));
         if (messageReceipt.isToGroup()) {
             log.info("sendMessage,success");
             resultMap.put("status", "success");
