@@ -19,4 +19,7 @@ public interface RemoteBotService {
 
     @GetMapping(value = "/message/send")
     R<String> sendMessage(@RequestParam("message") String message);
+
+    @GetMapping(value = "/message/send2")
+    R<String> sendMessage2(@RequestParam("message") String message);
 }

@@ -15,6 +15,16 @@ public class BotFallbackFactory implements FallbackFactory<RemoteBotService> {
 
     @Override
     public RemoteBotService create(Throwable cause) {
-        return message -> R.error("发送异常" + cause.getMessage());
+        return new RemoteBotService() {
+            @Override
+            public R<String> sendMessage(String message) {
+                return R.error("发送异常" + cause.getMessage());
+            }
+
+            @Override
+            public R<String> sendMessage2(String message) {
+                return R.error("发送异常" + cause.getMessage());
+            }
+        };
     }
 }

@@ -78,4 +78,11 @@ public class CrawlerTask {
         XxlJobHelper.handleSuccess("执行完毕");
     }
 
+    @XxlJob("privateDomain")
+    public void privateDomain() {
+        log.info("执行器进入逻辑处理privateDomain");
+        remoteBotService.sendMessage2("加油");
+        XxlJobHelper.handleSuccess("执行完毕");
+    }
+
 }

@@ -50,6 +50,11 @@ public class BotController {
 
     @Value("${qq.config.groupId}")
     Long groupId;
+    @Value("${qq.config.privateGroupId}")
+    Long privateGroupId;
+
+    @Value("${qq.config.url}")
+    String imgUrl;
 
     @GetMapping("send")
     public R<String> sendMessage(@RequestParam("message") String message) {
@@ -61,7 +66,6 @@ public class BotController {
                         log.info("查询群号异常");
                         return;
                     }
-                    String imgUrl = "https://api.vvhan.com/api/tao";
                     byte[] urlByByte = HttpUtils.getUrlByByte(imgUrl);
                     log.info("字节长度 {}", Optional.ofNullable(urlByByte).map(s -> s.length).orElse(0));
                     ExternalResource ex = ExternalResource.Companion.create(urlByByte);
@@ -83,5 +87,37 @@ public class BotController {
         }
         log.info("发送消息执行成功");
         return R.success("发送成功");
+    }
+
+    @GetMapping("send2")
+    public R<String> sendMessage2(@RequestParam("message") String message) {
+        if (DataUtils.isNotEmpty(message)) {
+            CompletableFuture.runAsync(() -> {
+                try {
+                    Group group = bot.getGroup(privateGroupId);
+                    if (Objects.isNull(group)) {
+                        log.info("查询群号异常");
+                        return;
+                    }
+                    byte[] urlByByte = HttpUtils.getUrlByByte(imgUrl);
+                    log.info("字节长度 {}", Optional.ofNullable(urlByByte).map(s -> s.length).orElse(0));
+                    ExternalResource ex = ExternalResource.Companion.create(urlByByte);
+                    Image image = group.uploadImage(ex);
+                    MessageChain chain = new MessageChainBuilder()
+                            .append(image)
+                            .build();
+                    MessageReceipt<Group> messageReceipt = group.sendMessage(chain);
+                    if (messageReceipt.isToGroup()) {
+                        log.info("消息已发送至群 {}", groupId);
+                    } else {
+                        log.warn("消息未发送至群 {}", groupId);
+                    }
+                    ex.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, taskExecutor);
+        }
+        return R.success();
     }
 }
