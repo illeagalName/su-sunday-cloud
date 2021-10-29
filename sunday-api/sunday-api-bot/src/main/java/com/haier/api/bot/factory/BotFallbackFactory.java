@@ -1,6 +1,7 @@
 package com.haier.api.bot.factory;
 
 import com.haier.api.bot.RemoteBotService;
+import com.haier.core.domain.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -14,6 +15,6 @@ public class BotFallbackFactory implements FallbackFactory<RemoteBotService> {
 
     @Override
     public RemoteBotService create(Throwable cause) {
-        return message -> null;
+        return message -> R.error("发送异常" + cause.getMessage());
     }
 }

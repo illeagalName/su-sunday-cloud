@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,11 +36,11 @@ public class CrawlerTask {
     @Value("${hitokoto.url}")
     String hitokotoUrl;
 
+    @Resource
+    HitokotoMapper hitokotoMapper;
 
-    final HitokotoMapper hitokotoMapper;
-
-
-    final RemoteBotService remoteBotService;
+    @Resource
+    RemoteBotService remoteBotService;
 
 
     /**
@@ -47,10 +48,6 @@ public class CrawlerTask {
      */
     final List<Pair<String, String>> HITOKOTO_TYPES = Lists.newArrayList(Pair.of("一言", "hitokoto"), Pair.of("中英文", "en"), Pair.of("社会语录", "social"), Pair.of("毒鸡汤", "soup"), Pair.of("彩虹屁", "fart"), Pair.of("渣男语录", "zha"));
 
-    public CrawlerTask(HitokotoMapper hitokotoMapper, RemoteBotService remoteBotService) {
-        this.hitokotoMapper = hitokotoMapper;
-        this.remoteBotService = remoteBotService;
-    }
 
     @XxlJob("getHitokotoInfo")
     public void getHitokotoInfo() {
@@ -62,11 +59,6 @@ public class CrawlerTask {
         List<Hitokoto> hitokotos = new ArrayList<>();
         HITOKOTO_TYPES.forEach(type -> {
             String s = HttpUtils.doGet(StringUtils.stringFormat(hitokotoUrl, type));
-            // {
-            //"code": 200,
-            //"type": "一言",
-            //"content": "有些时候，当你说你赢了的时候，你就已经输了。"
-            //}
             JSONObject result = JSON.parseObject(s);
             if (Objects.nonNull(result) && Objects.equals(result.getInteger("code"), 200)) {
                 String content = result.getString("content");
@@ -74,9 +66,9 @@ public class CrawlerTask {
                 hitokoto.setType(type.getRight());
                 hitokoto.setContent(content);
                 hitokotos.add(hitokoto);
-                log.info("开始发送bot");
-                remoteBotService.sendMessage(type.getLeft().concat(" - ").concat(content));
-                log.info("发送bot结束");
+                if (type.getLeft().equals("毒鸡汤")) {
+                    remoteBotService.sendMessage(type.getLeft().concat(" - ").concat(content));
+                }
             }
             XxlJobHelper.log("type : {} 异常", type);
         });

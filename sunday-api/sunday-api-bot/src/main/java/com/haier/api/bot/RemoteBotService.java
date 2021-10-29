@@ -2,6 +2,7 @@ package com.haier.api.bot;
 
 import com.haier.api.bot.factory.BotFallbackFactory;
 import com.haier.core.constant.ServiceNameConstants;
+import com.haier.core.domain.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,5 +18,5 @@ import java.util.Map;
 public interface RemoteBotService {
 
     @GetMapping(value = "/message/send")
-    Map<String, String> sendMessage(@RequestParam("message") String message);
+    R<String> sendMessage(@RequestParam("message") String message);
 }

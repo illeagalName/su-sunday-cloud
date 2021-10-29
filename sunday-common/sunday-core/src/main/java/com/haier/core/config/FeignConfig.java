@@ -40,7 +40,7 @@ public class FeignConfig {
                 // 配置客户端IP
                 requestTemplate.header("X-Forwarded-For", IpUtils.getIpAddr(ServletUtils.getRequest()));
             } catch (Exception e) {
-                log.error("异常捕获到了", e);
+                log.error("异常捕获到了 {}", e.getMessage());
             }
         };
     }
