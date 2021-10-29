@@ -2,11 +2,16 @@ package com.haier.bot.controller;
 
 import com.haier.core.domain.R;
 import com.haier.core.util.DataUtils;
+import com.haier.core.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.MessageReceipt;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,13 +53,28 @@ public class BotController {
     @GetMapping("send")
     public R<String> sendMessage(@RequestParam("message") String message) {
         if (DataUtils.isNotEmpty(message)) {
-            log.info(message);
             CompletableFuture.runAsync(() -> {
-                MessageReceipt<Group> messageReceipt = Objects.requireNonNull(bot.getGroup(groupId)).sendMessage(new PlainText(message + "\n \n 喝水时间到了！！！！"));
-                if (messageReceipt.isToGroup()) {
-                    log.info("消息已发送至群 {}", groupId);
-                } else {
-                    log.warn("消息未发送至群 {}", groupId);
+                try {
+                    Group group = bot.getGroup(groupId);
+                    if (Objects.isNull(group)) {
+                        log.info("查询群号异常");
+                        return;
+                    }
+                    String imgUrl = "https://api.vvhan.com/api/tao";
+                    ExternalResource ex = ExternalResource.Companion.create(HttpUtils.getUrlByByte(imgUrl));
+                    Image image = group.uploadImage(ex);
+                    MessageChain chain = new MessageChainBuilder()
+                            .append(image)
+                            .build();
+                    MessageReceipt<Group> messageReceipt = group.sendMessage(chain);
+                    if (messageReceipt.isToGroup()) {
+                        log.info("消息已发送至群 {}", groupId);
+                    } else {
+                        log.warn("消息未发送至群 {}", groupId);
+                    }
+                    ex.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }, taskExecutor);
         }

@@ -4,6 +4,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -211,5 +212,17 @@ public class HttpUtils {
         return respStr;
     }
 
+    public static byte[] getUrlByByte(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Connection", "keep-alive")
+                .build();
+
+        ResponseBody body = COMMON_CLIENT.newCall(request).execute().body();
+        if (Objects.nonNull(body)) {
+            return body.bytes();
+        }
+        return null;
+    }
 
 }
