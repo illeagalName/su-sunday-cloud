@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -61,7 +62,9 @@ public class BotController {
                         return;
                     }
                     String imgUrl = "https://api.vvhan.com/api/tao";
-                    ExternalResource ex = ExternalResource.Companion.create(HttpUtils.getUrlByByte(imgUrl));
+                    byte[] urlByByte = HttpUtils.getUrlByByte(imgUrl);
+                    log.info("字节长度 {}", Optional.ofNullable(urlByByte).map(s -> s.length).orElse(0));
+                    ExternalResource ex = ExternalResource.Companion.create(urlByByte);
                     Image image = group.uploadImage(ex);
                     MessageChain chain = new MessageChainBuilder()
                             .append(image)
