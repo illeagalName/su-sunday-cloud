@@ -7,9 +7,11 @@ import com.haier.core.util.StringUtils;
 import feign.RequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -22,7 +24,12 @@ public class FeignConfig {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             try {
-                HttpServletRequest httpServletRequest = ServletUtils.getRequest();
+                ServletRequestAttributes requestAttributes = ServletUtils.getRequestAttributes();
+                if (Objects.isNull(requestAttributes)) {
+                    // 定时任务这种，获取不到request
+                    return;
+                }
+                HttpServletRequest httpServletRequest = requestAttributes.getRequest();
                 Map<String, String> headers = ServletUtils.getHeaders(httpServletRequest);
                 // 传递用户信息请求头，防止丢失
                 String userId = headers.get(CacheConstants.DETAILS_USER_ID);

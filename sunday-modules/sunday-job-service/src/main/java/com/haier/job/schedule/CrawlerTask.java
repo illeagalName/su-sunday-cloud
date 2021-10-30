@@ -51,7 +51,6 @@ public class CrawlerTask {
 
     @XxlJob("getHitokotoInfo")
     public void getHitokotoInfo() {
-        log.info("执行器进入逻辑处理getHitokotoInfo");
         XxlJobHelper.log("执行器进入逻辑处理getHitokotoInfo");
         // XxlJobHelper.handleFail(""),XxlJobHelper.handleSuccess("")
         //获取页面传递的参数
@@ -80,7 +79,6 @@ public class CrawlerTask {
 
     @XxlJob("privateDomain")
     public void privateDomain() {
-        log.info("执行器进入逻辑处理privateDomain");
         remoteBotService.sendMessage2("加油");
         XxlJobHelper.handleSuccess("执行完毕");
     }
