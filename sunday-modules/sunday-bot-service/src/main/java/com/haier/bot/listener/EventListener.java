@@ -66,10 +66,10 @@ public class EventListener extends SimpleListenerHost {
     public ListeningStatus getGroupMessage(@NotNull GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
         String[] split = message.split("\\s+");
-        String command = split[0];
+        String command = split.length > 0 ? split[0] : "";
         switch (command) {
             case "菜单":
-                event.getSubject().sendMessage(new PlainText(menu));
+//                event.getSubject().sendMessage(new PlainText(menu));
                 break;
             case "天气":
                 if (split.length != 1) {
