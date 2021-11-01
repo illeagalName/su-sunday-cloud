@@ -1,5 +1,6 @@
 package com.haier.bot.listener;
 
+import com.haier.bot.service.BotService;
 import kotlin.coroutines.CoroutineContext;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.EventHandler;
@@ -10,6 +11,8 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.util.Arrays;
 
 /**
  * @ProjectName: su-sunday-cloud
@@ -23,6 +26,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class EventListener extends SimpleListenerHost {
+
+    @Resource
+    BotService botService;
+
     @EventHandler()
     public ListeningStatus onNewFriendRequest(NewFriendRequestEvent event) {
         String fromNick = event.getMessage();
@@ -57,6 +64,22 @@ public class EventListener extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus getGroupMessage(@NotNull GroupMessageEvent event) {
+        String message = event.getMessage().contentToString();
+        String[] split = message.split("\\s+");
+        String command = split[0];
+        switch (command) {
+            case "菜单":
+                event.getSubject().sendMessage(new PlainText(menu));
+                break;
+            case "天气":
+                if (split.length != 1) {
+                    botService.getWeatherInfo(event.getGroup().getId(), split[1]);
+                }
+                break;
+            case "笑话":
+                botService.getJokeInfo(event.getGroup().getId());
+                break;
+        }
         return ListeningStatus.LISTENING;
     }
 
@@ -78,5 +101,10 @@ public class EventListener extends SimpleListenerHost {
         log.error("异常" + context + "\n原因:" + exception.toString());
         throw new RuntimeException("在事件处理中发生异常", exception);
     }
+
+    private String menu =
+            "1.天气 城市\n" +
+                    "2.笑话\n" +
+                    "注意：不需要笑话，直接汉字命令\n";
 
 }
