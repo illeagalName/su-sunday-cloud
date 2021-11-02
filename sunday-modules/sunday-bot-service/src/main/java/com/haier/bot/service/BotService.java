@@ -156,15 +156,15 @@ public class BotService {
                 StringBuilder sb = new StringBuilder();
 
                 sb.append("截止到").append(DateUtils.toString(now, "yyyy-MM-dd HH时")).append(":")
-                        .append("\n\t\t").append("高风险地区有").append(result.getInteger("hcount")).append("个：").append("\n\t\t\t");
+                        .append("\n").append("高风险地区有").append(result.getInteger("hcount")).append("个：").append("\n\t\t\t");
                 JSONArray highlist = result.getJSONArray("highlist");
                 int i = 1;
                 for (Object o : highlist) {
                     JSONObject obj = (JSONObject) o;
-                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [");
+                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [\t");
                     JSONArray communitys = obj.getJSONArray("communitys");
                     for (Object community : communitys) {
-                        sb.append(community);
+                        sb.append(community).append("\t");
                     }
                     sb.append("]\n\t\t\t");
                     i++;
@@ -176,10 +176,10 @@ public class BotService {
                 JSONArray middlelist = result.getJSONArray("middlelist");
                 for (Object o : middlelist) {
                     JSONObject obj = (JSONObject) o;
-                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [");
+                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [\t");
                     JSONArray communitys = obj.getJSONArray("communitys");
                     for (Object community : communitys) {
-                        sb.append(community);
+                        sb.append(community).append("\t");
                     }
                     sb.append("]\n\t\t\t");
                     i++;
