@@ -22,6 +22,9 @@ public class CrawlerTask {
     @Value("${qq.config.privateGroupId}")
     Long privateGroupId;
 
+    @Value("${qq.config.groupId}")
+    Long groupId;
+
     @Resource
     BotService botService;
 
@@ -30,4 +33,8 @@ public class CrawlerTask {
         botService.getJokeInfo(privateGroupId);
     }
 
+    @Scheduled(cron = "0 0,30 * * * ?")
+    public void sendCosToGroupId() {
+        botService.sendCosToGroupId(groupId, "cos");
+    }
 }

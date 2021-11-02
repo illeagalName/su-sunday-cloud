@@ -1,5 +1,6 @@
 package com.haier.bot.controller;
 
+import com.haier.bot.service.BotService;
 import com.haier.core.domain.R;
 import com.haier.core.util.DataUtils;
 import com.haier.core.util.HttpUtils;
@@ -55,6 +56,9 @@ public class BotController {
 
     @Value("${qq.config.url}")
     String imgUrl;
+
+    @Resource
+    BotService botService;
 
     @GetMapping("send")
     public R<String> sendMessage(@RequestParam("message") String message) {
@@ -119,5 +123,9 @@ public class BotController {
             }, taskExecutor);
         }
         return R.success();
+    }
+    @GetMapping("yiqing")
+    public void yiqing(){
+        botService.COVID_19(privateGroupId);
     }
 }

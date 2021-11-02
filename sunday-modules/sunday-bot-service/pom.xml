@@ -59,6 +59,11 @@
             <artifactId>sunday-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.haier</groupId>
+            <artifactId>sunday-redis</artifactId>
+        </dependency>
+
         <!-- mirai机器人依赖 -->
         <dependency>
             <groupId>net.mamoe</groupId>
@@ -81,4 +86,25 @@
             <version>1.0-dev-17</version>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

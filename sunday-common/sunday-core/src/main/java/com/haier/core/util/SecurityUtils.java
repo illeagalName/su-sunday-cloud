@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -238,5 +241,31 @@ public class SecurityUtils {
             timeMillis = timeMillis / mask;
         } while (timeMillis > 0);
         return new String(buf, charPos, (bufLength - charPos));
+    }
+
+    /***********************generateSHA256Str***********************************************************************/
+
+    public static String generateSHA256Str(String str) {
+        MessageDigest messageDigest;
+        String encodeStr = "";
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = messageDigest.digest();
+            StringBuilder stringBuffer = new StringBuilder();
+            String temp = null;
+            for (int i = 0; i < bytes.length; i++) {
+                temp = Integer.toHexString(bytes[i] & 0xFF);
+                if (temp.length() == 1) {
+                    //1得到一位的进行补0操作
+                    stringBuffer.append("0");
+                }
+                stringBuffer.append(temp);
+            }
+            encodeStr = stringBuffer.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return encodeStr;
     }
 }

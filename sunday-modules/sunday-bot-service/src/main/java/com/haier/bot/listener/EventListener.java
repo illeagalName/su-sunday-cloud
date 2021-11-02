@@ -79,6 +79,9 @@ public class EventListener extends SimpleListenerHost {
             case "笑话":
                 botService.getJokeInfo(event.getGroup().getId());
                 break;
+            case "风险地区":
+                botService.COVID_19(event.getGroup().getId());
+                break;
         }
         return ListeningStatus.LISTENING;
     }
