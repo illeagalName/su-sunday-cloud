@@ -222,7 +222,7 @@ public class HttpUtils {
         if (Objects.nonNull(body)) {
             return body.bytes();
         }
-        return null;
+        return new byte[0];
     }
 
 }

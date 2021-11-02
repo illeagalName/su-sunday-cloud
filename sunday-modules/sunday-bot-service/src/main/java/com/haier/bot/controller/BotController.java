@@ -1,6 +1,5 @@
 package com.haier.bot.controller;
 
-import com.haier.bot.service.BotService;
 import com.haier.core.domain.R;
 import com.haier.core.util.DataUtils;
 import com.haier.core.util.HttpUtils;
@@ -11,7 +10,6 @@ import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -22,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -57,9 +52,6 @@ public class BotController {
     @Value("${qq.config.url}")
     String imgUrl;
 
-    @Resource
-    BotService botService;
-
     @GetMapping("send")
     public R<String> sendMessage(@RequestParam("message") String message) {
         if (DataUtils.isNotEmpty(message)) {
@@ -71,7 +63,6 @@ public class BotController {
                         return;
                     }
                     byte[] urlByByte = HttpUtils.getUrlByByte(imgUrl);
-                    log.info("字节长度 {}", Optional.ofNullable(urlByByte).map(s -> s.length).orElse(0));
                     ExternalResource ex = ExternalResource.Companion.create(urlByByte);
                     Image image = group.uploadImage(ex);
                     MessageChain chain = new MessageChainBuilder()
@@ -103,8 +94,12 @@ public class BotController {
                         log.info("查询群号异常");
                         return;
                     }
-                    byte[] urlByByte = HttpUtils.getUrlByByte(imgUrl);
-                    log.info("字节长度 {}", Optional.ofNullable(urlByByte).map(s -> s.length).orElse(0));
+                    int i = 0;
+                    byte[] urlByByte = new byte[0];
+                    while (i < 5 && urlByByte.length < 100) {
+                        urlByByte = HttpUtils.getUrlByByte(imgUrl);
+                        i++;
+                    }
                     ExternalResource ex = ExternalResource.Companion.create(urlByByte);
                     Image image = group.uploadImage(ex);
                     MessageChain chain = new MessageChainBuilder()
@@ -123,9 +118,5 @@ public class BotController {
             }, taskExecutor);
         }
         return R.success();
-    }
-    @GetMapping("yiqing")
-    public void yiqing(){
-        botService.COVID_19(privateGroupId);
     }
 }
