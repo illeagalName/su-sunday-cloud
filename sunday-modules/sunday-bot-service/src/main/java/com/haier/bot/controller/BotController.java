@@ -1,5 +1,6 @@
 package com.haier.bot.controller;
 
+import com.haier.bot.service.BotService;
 import com.haier.core.domain.R;
 import com.haier.core.util.DataUtils;
 import com.haier.core.util.HttpUtils;
@@ -52,6 +53,9 @@ public class BotController {
     @Value("${qq.config.url}")
     String imgUrl;
 
+    @Resource
+    BotService botService;
+
     @GetMapping("send")
     public R<String> sendMessage(@RequestParam("message") String message) {
         if (DataUtils.isNotEmpty(message)) {
@@ -84,39 +88,10 @@ public class BotController {
         return R.success("发送成功");
     }
 
-    @GetMapping("send2")
-    public R<String> sendMessage2(@RequestParam("message") String message) {
-        if (DataUtils.isNotEmpty(message)) {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    Group group = bot.getGroup(privateGroupId);
-                    if (Objects.isNull(group)) {
-                        log.info("查询群号异常");
-                        return;
-                    }
-                    int i = 0;
-                    byte[] urlByByte = new byte[0];
-                    while (i < 5 && urlByByte.length < 100) {
-                        urlByByte = HttpUtils.getUrlByByte(imgUrl);
-                        i++;
-                    }
-                    ExternalResource ex = ExternalResource.Companion.create(urlByByte);
-                    Image image = group.uploadImage(ex);
-                    MessageChain chain = new MessageChainBuilder()
-                            .append(image)
-                            .build();
-                    MessageReceipt<Group> messageReceipt = group.sendMessage(chain);
-                    if (messageReceipt.isToGroup()) {
-                        log.info("消息已发送至群 {}", groupId);
-                    } else {
-                        log.warn("消息未发送至群 {}", groupId);
-                    }
-                    ex.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }, taskExecutor);
-        }
+    @GetMapping("joke")
+    public R<String> joke() {
+        botService.getJokeInfo(privateGroupId);
         return R.success();
     }
+
 }

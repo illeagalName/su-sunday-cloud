@@ -79,7 +79,7 @@ public class CrawlerTask {
 
     @XxlJob("privateDomain")
     public void privateDomain() {
-        remoteBotService.sendMessage2("加油");
+        remoteBotService.joke();
         XxlJobHelper.handleSuccess("执行完毕");
     }
 

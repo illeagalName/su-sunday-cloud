@@ -3,7 +3,6 @@ package com.haier.bot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -16,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
  * @Version: 1.0
  */
 @SpringBootApplication
-@EnableScheduling
 public class BotApplication {
     public static void main(String[] args) {
         SpringApplication.run(BotApplication.class, args);

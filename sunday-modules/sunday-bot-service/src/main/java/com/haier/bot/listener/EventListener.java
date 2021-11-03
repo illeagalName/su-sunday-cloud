@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * @ProjectName: su-sunday-cloud

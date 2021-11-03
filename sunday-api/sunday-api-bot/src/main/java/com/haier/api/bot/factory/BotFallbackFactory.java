@@ -22,7 +22,7 @@ public class BotFallbackFactory implements FallbackFactory<RemoteBotService> {
             }
 
             @Override
-            public R<String> sendMessage2(String message) {
+            public R<String> joke() {
                 return R.error("发送异常" + cause.getMessage());
             }
         };
