@@ -96,6 +96,7 @@ public class BotController {
 
     @GetMapping("readWorld")
     public R<String> readWorld() {
+        botService.everyDayToReadWorld(groupId);
         botService.everyDayToReadWorld(privateGroupId);
         return R.success();
     }

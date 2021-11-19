@@ -3,6 +3,7 @@ package com.haier.bot.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.haier.bot.util.TextToImage;
 import com.haier.core.util.DateUtils;
 import com.haier.core.util.HttpUtils;
 import com.haier.core.util.SecurityUtils;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -179,36 +182,58 @@ public class BotService {
                 StringBuilder sb = new StringBuilder();
 
                 sb.append("截止到").append(DateUtils.toString(now, "yyyy-MM-dd HH时")).append(":")
-                        .append("\n").append("高风险地区有").append(result.getInteger("hcount")).append("个：").append("\n\t\t\t");
+                        .append("\n\n").append("高风险地区有").append(result.getInteger("hcount")).append("个：").append("\n");
                 JSONArray highlist = result.getJSONArray("highlist");
                 int i = 1;
                 for (Object o : highlist) {
                     JSONObject obj = (JSONObject) o;
-                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [\t");
+                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [");
                     JSONArray communitys = obj.getJSONArray("communitys");
-                    for (Object community : communitys) {
-                        sb.append(community).append("\t");
+                    int size = communitys.size();
+                    for (int j = 0; j < size; j++) {
+                        sb.append(communitys.get(j));
+                        if (j != size - 1) {
+                            sb.append("、");
+                        }
                     }
-                    sb.append("]\n\t\t\t");
+                    sb.append("]");
+                    sb.append("\n");
                     i++;
                 }
 
                 i = 1;
-                sb.append("\n");
-                sb.append("中风险地区有").append(result.getInteger("mcount")).append("个：").append("\n\t\t\t");
+                sb.append("\n\n");
+                sb.append("中风险地区有").append(result.getInteger("mcount")).append("个：").append("\n");
                 JSONArray middlelist = result.getJSONArray("middlelist");
                 for (Object o : middlelist) {
                     JSONObject obj = (JSONObject) o;
-                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [\t");
+                    sb.append(i).append(". ").append(obj.getString("area_name")).append(" [");
                     JSONArray communitys = obj.getJSONArray("communitys");
-                    for (Object community : communitys) {
-                        sb.append(community).append("\t");
+                    int size = communitys.size();
+                    for (int j = 0; j < size; j++) {
+                        sb.append(communitys.get(j));
+                        if (j != size - 1) {
+                            sb.append("、");
+                        }
                     }
-                    sb.append("]\n\t\t\t");
+                    sb.append("]");
+                    sb.append("\n");
                     i++;
                 }
                 redisService.setObject(key, result, 1L, TimeUnit.HOURS);
-                bot.getGroup(groupId).sendMessage(new PlainText(sb.toString()));
+                // 生成图片
+                String path = "./a.png";
+                if (TextToImage.createImage(sb.toString(), path)) {
+                    Group group = bot.getGroup(groupId);
+                    ExternalResource externalResource = ExternalResource.Companion.create(new File(path));
+                    Image image = group.uploadImage(externalResource);
+                    group.sendMessage(image);
+                    try {
+                        externalResource.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else {
                 bot.getGroup(groupId).sendMessage(new PlainText("网络开小差！！！"));
             }
