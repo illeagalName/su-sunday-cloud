@@ -81,6 +81,9 @@ public class EventListener extends SimpleListenerHost {
             case "风险地区":
                 botService.COVID_19(event.getGroup().getId());
                 break;
+            case "买家秀":
+                botService.sendShowToGroupId(event.getGroup().getId());
+                break;
         }
         return ListeningStatus.LISTENING;
     }

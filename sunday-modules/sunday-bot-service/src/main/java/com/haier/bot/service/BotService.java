@@ -62,6 +62,9 @@ public class BotService {
     @Value("${qq.config.covid}")
     String covidUrl;
 
+    @Value("${qq.config.url}")
+    String taoUrl;
+
     @Resource
     Bot bot;
 
@@ -120,9 +123,20 @@ public class BotService {
     }
 
 
-    public void sendCosToGroupId(Long groupId, String message) {
+    public void sendShowToGroupId(Long groupId) {
         CompletableFuture.runAsync(() -> {
-            bot.getGroup(groupId).sendMessage(new PlainText(message));
+            Group group = bot.getGroup(groupId);
+            try {
+                URL url = new URL(taoUrl);
+                URLConnection urlConnection = url.openConnection();
+                byte[] bytes = urlConnection.getInputStream().readAllBytes();
+                ExternalResource externalResource = ExternalResource.Companion.create(bytes);
+                Image image = group.uploadImage(externalResource);
+                group.sendMessage(image);
+                externalResource.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }, taskExecutor);
     }
 
