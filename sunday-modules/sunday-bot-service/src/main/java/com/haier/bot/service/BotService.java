@@ -122,22 +122,29 @@ public class BotService {
         }, taskExecutor);
     }
 
+    private String key = "sunday:bot:show";
 
     public void sendShowToGroupId(Long groupId) {
-        CompletableFuture.runAsync(() -> {
-            Group group = bot.getGroup(groupId);
-            try {
-                URL url = new URL(taoUrl);
-                URLConnection urlConnection = url.openConnection();
-                byte[] bytes = urlConnection.getInputStream().readAllBytes();
-                ExternalResource externalResource = ExternalResource.Companion.create(bytes);
-                Image image = group.uploadImage(externalResource);
-                group.sendMessage(image);
-                externalResource.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, taskExecutor);
+        Integer value = redisService.getObject(key);
+        if (Objects.nonNull(value)) {
+            bot.getGroup(groupId).sendMessage(new PlainText("等等，喘口气~"));
+        } else {
+            CompletableFuture.runAsync(() -> {
+                Group group = bot.getGroup(groupId);
+                try {
+                    URL url = new URL(taoUrl);
+                    URLConnection urlConnection = url.openConnection();
+                    byte[] bytes = urlConnection.getInputStream().readAllBytes();
+                    ExternalResource externalResource = ExternalResource.Companion.create(bytes);
+                    Image image = group.uploadImage(externalResource);
+                    group.sendMessage(image);
+                    externalResource.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, taskExecutor);
+            redisService.setObject(key, 1, 3L, TimeUnit.SECONDS);
+        }
     }
 
     public void COVID_19(Long groupId) {
