@@ -20,21 +20,24 @@ public class TextToImage {
      * @param message
      * @throws Exception
      */
+    // 标点符号也算一个字,字体宽度
+    private static final int stringWidth;
+    // 图片字体
+    private static final Font font = new Font("微软雅黑", Font.PLAIN, 22);
+
+    static {
+        AffineTransform affinetransform = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+        stringWidth = (int) (font.getStringBounds("字", frc).getWidth());
+    }
+
     public static boolean createImage(String message, String path) {
         // 图片宽度
         int width = 800;
-        // 图片字体
-        Font font = new Font("微软雅黑", Font.PLAIN, 22);
+
         // 每行或者每个文字的高度
         int lineHeight = 30;
         String[] strArr = message.split("\n");
-
-//        FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(font);
-//        int stringWidth = fm.charWidth('字');
-        // 标点符号也算一个字
-        AffineTransform affinetransform = new AffineTransform();
-        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-        int stringWidth = (int) (font.getStringBounds("字", frc).getWidth());
         // 每行应该多少个字符
         int lineStringNum = width % stringWidth == 0 ? (width / stringWidth) : ((width / stringWidth) + 1);
 
