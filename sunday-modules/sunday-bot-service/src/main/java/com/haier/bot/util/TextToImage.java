@@ -58,8 +58,9 @@ public class TextToImage {
         int height = newList.size() * lineHeight + 10;
         File outFile = new File(path);
         // 创建图片
-        int margin = 25;
-        int newWidth = width + margin * 2;
+        int leftMargin = 25;
+        int rightMargin = 40;
+        int newWidth = width + leftMargin + rightMargin;
         BufferedImage image = new BufferedImage(newWidth, height, BufferedImage.TYPE_INT_BGR);
         Graphics g = image.getGraphics();
         g.setClip(0, 0, newWidth, height);
@@ -69,7 +70,7 @@ public class TextToImage {
         g.setFont(font);// 设置画笔字体
         // 写入图片
         for (int i = 0; i < newList.size(); i++) {
-            g.drawString(newList.get(i), margin, lineHeight * (i + 1));
+            g.drawString(newList.get(i), leftMargin, lineHeight * (i + 1));
         }
         g.dispose();
         try {
