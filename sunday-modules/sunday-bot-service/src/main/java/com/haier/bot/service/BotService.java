@@ -9,7 +9,10 @@ import com.haier.core.util.SecurityUtils;
 import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -22,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -90,6 +96,23 @@ public class BotService {
         CompletableFuture.runAsync(() -> {
             String s = HttpUtils.doGet(jokeUrl);
             bot.getGroup(groupId).sendMessage(new PlainText(s));
+        }, taskExecutor);
+    }
+
+    public void everyDayToReadWorld(Long groupId) {
+        CompletableFuture.runAsync(() -> {
+            Group group = bot.getGroup(groupId);
+            try {
+                URL url = new URL("https://api.vvhan.com/api/60s");
+                URLConnection urlConnection = url.openConnection();
+                byte[] bytes = urlConnection.getInputStream().readAllBytes();
+                ExternalResource externalResource = ExternalResource.Companion.create(bytes);
+                Image image = group.uploadImage(externalResource);
+                group.sendMessage(image);
+                externalResource.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }, taskExecutor);
     }
 

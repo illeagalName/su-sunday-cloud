@@ -20,4 +20,7 @@ public interface RemoteBotService {
 
     @GetMapping(value = "/message/joke")
     R<String> joke();
+
+    @GetMapping(value = "/message/readWorld")
+    R<String> readWorld();
 }

@@ -83,4 +83,9 @@ public class CrawlerTask {
         XxlJobHelper.handleSuccess("执行完毕");
     }
 
+    @XxlJob("readWorld")
+    public void readWorld() {
+        remoteBotService.readWorld();
+        XxlJobHelper.handleSuccess("执行完毕");
+    }
 }
