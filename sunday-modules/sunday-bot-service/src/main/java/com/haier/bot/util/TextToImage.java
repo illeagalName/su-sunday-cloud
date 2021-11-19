@@ -1,6 +1,8 @@
 package com.haier.bot.util;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +29,12 @@ public class TextToImage {
         int lineHeight = 30;
         String[] strArr = message.split("\n");
 
-        FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(font);
+//        FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(font);
+//        int stringWidth = fm.charWidth('字');
         // 标点符号也算一个字
-        int stringWidth = fm.charWidth('字');
+        AffineTransform affinetransform = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+        int stringWidth = (int) (font.getStringBounds("字", frc).getWidth());
         // 每行应该多少个字符
         int lineStringNum = width % stringWidth == 0 ? (width / stringWidth) : ((width / stringWidth) + 1);
 
