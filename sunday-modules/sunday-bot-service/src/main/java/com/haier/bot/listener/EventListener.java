@@ -1,17 +1,25 @@
 package com.haier.bot.listener;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.haier.bot.config.properties.QqProperties;
 import com.haier.bot.service.BotService;
+import com.haier.bot.util.MlyUtil;
 import kotlin.coroutines.CoroutineContext;
 import lombok.extern.slf4j.Slf4j;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.data.PlainText;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @ProjectName: su-sunday-cloud
@@ -28,6 +36,9 @@ public class EventListener extends SimpleListenerHost {
 
     @Resource
     BotService botService;
+
+    @Resource
+    QqProperties qqProperties;
 
     @EventHandler()
     public ListeningStatus onNewFriendRequest(NewFriendRequestEvent event) {
@@ -64,6 +75,27 @@ public class EventListener extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus getGroupMessage(@NotNull GroupMessageEvent event) {
         String message = event.getMessage().contentToString();
+        Pair<Boolean, String> atMe = isAtMe(message);
+        if (atMe.getLeft()) {
+            String content = atMe.getRight();
+            long from = event.getSender().getId();
+            String fromName = event.getSenderName();
+            Group group = event.getGroup();
+            long to = group.getId();
+            String toName = group.getName();
+            String s = MlyUtil.AiChat(content, 2, from, fromName, to, toName);
+            JSONObject jsonObject = JSON.parseObject(s);
+            String msg;
+            if (Objects.equals(jsonObject.getString("code"), "00000")) {
+                JSONArray data = jsonObject.getJSONArray("data");
+                Object o = data.get(0);
+                msg = JSON.parseObject(JSON.toJSONString(o)).getString("content");
+            } else {
+                msg = "你说的啥，风太大，没听见~";
+            }
+            botService.sendChatMessage(to, from, msg);
+            return ListeningStatus.LISTENING;
+        }
         String[] split = message.split("\\s+");
         String command = split.length > 0 ? split[0] : "";
         switch (command) {
@@ -112,4 +144,13 @@ public class EventListener extends SimpleListenerHost {
                     "2.笑话\n" +
                     "注意：不需要笑话，直接汉字命令\n";
 
+
+    private Pair<Boolean, String> isAtMe(String message) {
+        String atMe = "@" + qqProperties.getAccount() + " ";
+        boolean b = message.startsWith(atMe);
+        if (b) {
+            return Pair.of(true, message.replace(atMe, ""));
+        }
+        return Pair.of(false, null);
+    }
 }

@@ -11,6 +11,7 @@ import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.utils.ExternalResource;
@@ -145,6 +146,12 @@ public class BotService {
             }, taskExecutor);
             redisService.setObject(key, 1, 3L, TimeUnit.SECONDS);
         }
+    }
+
+    public void sendChatMessage(Long groupId, Long to, String message) {
+        CompletableFuture.runAsync(() -> {
+            bot.getGroup(groupId).sendMessage(new At(to).plus(new PlainText("\n")).plus(new PlainText(message)));
+        }, taskExecutor);
     }
 
     public void COVID_19(Long groupId) {
