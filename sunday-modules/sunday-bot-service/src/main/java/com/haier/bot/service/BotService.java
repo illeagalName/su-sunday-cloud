@@ -11,9 +11,7 @@ import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -138,10 +136,11 @@ public class BotService {
                     byte[] bytes = urlConnection.getInputStream().readAllBytes();
                     ExternalResource externalResource = ExternalResource.Companion.create(bytes);
                     Image image = group.uploadImage(externalResource);
-                    group.sendMessage(image);
+                    MessageChain chain = new MessageChainBuilder().append("看多了伤身体！\n").append(image).build();
+                    group.sendMessage(chain);
                     externalResource.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    group.sendMessage(new PlainText("oh~ 图片有毒~"));
                 }
             }, taskExecutor);
             redisService.setObject(key, 1, 3L, TimeUnit.SECONDS);

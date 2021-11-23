@@ -13,6 +13,8 @@ import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.*;
+import net.mamoe.mirai.message.MessageReceipt;
+import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.PlainText;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -122,9 +124,22 @@ public class EventListener extends SimpleListenerHost {
 
     @NotNull
     @EventHandler
+    public void messagePostSend(@NotNull GroupMessagePostSendEvent event) throws Exception {
+        String s = event.getMessage().contentToString();
+        if (s.startsWith("看多了伤身体")) {
+            MessageReceipt<Group> receipt = event.getReceipt();
+            if (Objects.nonNull(receipt)) {
+                receipt.recallIn(20000);
+            }
+        }
+    }
+
+    @NotNull
+    @EventHandler
     public void getBotOffline(@NotNull BotOfflineEvent event) throws Exception {
         log.error("掉了");
     }
+
 
     @NotNull
     @EventHandler
