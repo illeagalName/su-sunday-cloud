@@ -30,6 +30,11 @@ public class BotFallbackFactory implements FallbackFactory<RemoteBotService> {
             public R<String> readWorld() {
                 return R.error("发送异常" + cause.getMessage());
             }
+
+            @Override
+            public R<String> takePills(String message) {
+                return R.error("发送异常" + cause.getMessage());
+            }
         };
     }
 }

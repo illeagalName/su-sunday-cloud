@@ -50,6 +50,9 @@ public class BotController {
     @Value("${qq.config.privateGroupId}")
     Long privateGroupId;
 
+    @Value("${qq.config.privateFriendId}")
+    Long privateFriendId;
+
     @Value("${qq.config.url}")
     String imgUrl;
 
@@ -98,6 +101,12 @@ public class BotController {
     public R<String> readWorld() {
         botService.everyDayToReadWorld(groupId);
         botService.everyDayToReadWorld(privateGroupId);
+        return R.success();
+    }
+
+    @GetMapping("takePills")
+    public R<String> takePills(@RequestParam("message") String message) {
+        botService.takePills(privateFriendId, message);
         return R.success();
     }
 }

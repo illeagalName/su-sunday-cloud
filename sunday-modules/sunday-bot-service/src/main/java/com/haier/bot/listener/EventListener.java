@@ -129,7 +129,7 @@ public class EventListener extends SimpleListenerHost {
         if (s.startsWith("看多了伤身体")) {
             MessageReceipt<Group> receipt = event.getReceipt();
             if (Objects.nonNull(receipt)) {
-                receipt.recallIn(20000);
+                receipt.recallIn(100000);
             }
         }
     }

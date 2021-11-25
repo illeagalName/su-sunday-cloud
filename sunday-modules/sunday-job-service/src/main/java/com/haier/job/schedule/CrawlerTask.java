@@ -19,6 +19,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,6 +87,18 @@ public class CrawlerTask {
     @XxlJob("readWorld")
     public void readWorld() {
         remoteBotService.readWorld();
+        XxlJobHelper.handleSuccess("执行完毕");
+    }
+
+    @XxlJob("takeMadinglin")
+    public void takeMadinglin() {
+        remoteBotService.takePills("到了吃吗丁啉的时间了，" + LocalDateTime.now());
+        XxlJobHelper.handleSuccess("执行完毕");
+    }
+
+    @XxlJob("takeDaxi")
+    public void takeDaxi() {
+        remoteBotService.takePills("到了吃铝碳酸镁(达喜)的时间了，" + LocalDateTime.now());
         XxlJobHelper.handleSuccess("执行完毕");
     }
 }

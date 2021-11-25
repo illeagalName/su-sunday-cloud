@@ -267,5 +267,9 @@ public class BotService {
         }, taskExecutor);
     }
 
-
+    public void takePills(Long to, String message) {
+        CompletableFuture.runAsync(() -> {
+            bot.getFriend(to).sendMessage(message);
+        }, taskExecutor);
+    }
 }
