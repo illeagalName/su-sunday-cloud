@@ -11,6 +11,7 @@ import com.haier.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,12 +250,12 @@ public class BotService {
                 }
                 redisService.setObject(key, result, 1L, TimeUnit.HOURS);
                 // 生成图片
-                String path = "./a.png";
+                String path = "./a.jpg";
                 if (TextToImage.createImage(sb.toString(), path)) {
                     Group group = bot.getGroup(groupId);
                     ExternalResource externalResource = ExternalResource.Companion.create(new File(path));
                     Image image = group.uploadImage(externalResource);
-                    group.sendMessage(image);
+                    MessageReceipt<Group> groupMessageReceipt = group.sendMessage(image);
                     try {
                         externalResource.close();
                     } catch (IOException e) {

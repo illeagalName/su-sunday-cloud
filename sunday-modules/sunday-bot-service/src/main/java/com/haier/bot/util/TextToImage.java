@@ -78,7 +78,7 @@ public class TextToImage {
         g.dispose();
         try {
             // 输出png图片
-            ImageIO.write(image, "png", outFile);
+            ImageIO.write(image, "jpg", outFile);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
