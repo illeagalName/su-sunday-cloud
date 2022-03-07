@@ -125,13 +125,13 @@ public class EventListener extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public void messagePostSend(@NotNull GroupMessagePostSendEvent event) throws Exception {
-        String s = event.getMessage().contentToString();
-        if (s.startsWith("看多了伤身体")) {
-            MessageReceipt<Group> receipt = event.getReceipt();
-            if (Objects.nonNull(receipt)) {
-                receipt.recallIn(100000);
-            }
-        }
+//        String s = event.getMessage().contentToString();
+//        if (s.startsWith("看多了伤身体")) {
+//            MessageReceipt<Group> receipt = event.getReceipt();
+//            if (Objects.nonNull(receipt)) {
+//                receipt.recallIn(100000);
+//            }
+//        }
     }
 
     @NotNull

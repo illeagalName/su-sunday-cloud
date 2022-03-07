@@ -137,7 +137,7 @@ public class BotService {
                     byte[] bytes = urlConnection.getInputStream().readAllBytes();
                     ExternalResource externalResource = ExternalResource.Companion.create(bytes);
                     Image image = group.uploadImage(externalResource);
-                    MessageChain chain = new MessageChainBuilder().append("看多了伤身体！\n").append(image).build();
+                    MessageChain chain = new MessageChainBuilder().append(image).build();
                     group.sendMessage(chain);
                     externalResource.close();
                 } catch (Exception e) {
