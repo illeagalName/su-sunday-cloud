@@ -5,13 +5,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 
  * @TableName t_menu
  */
 @Data
 public class Menu implements Serializable {
     /**
-     * 
+     *
      */
     private Long menuId;
 
@@ -46,36 +45,36 @@ public class Menu implements Serializable {
     private String component;
 
     /**
-     * 
+     *
      */
     private String redirect;
 
     /**
      * 是否外链
-0 否
-1 是
+     * 0 否
+     * 1 是
      */
     private Integer isFrame;
 
     /**
      * 菜单类型
-M 菜单menu
-B 按钮button
-C 目录catalog
+     * M 菜单menu
+     * B 按钮button
+     * C 目录catalog
      */
     private String menuType;
 
     /**
      * 显示状态
-1 显示
-0 隐藏
+     * 1 显示
+     * 0 隐藏
      */
-    private Integer visible;
+    private Boolean visible;
 
     /**
      * 菜单状态
-0 正常
-1 停用
+     * 0 正常
+     * 1 停用
      */
     private Integer status;
 
@@ -104,19 +103,19 @@ C 目录catalog
         }
         Menu other = (Menu) that;
         return (this.getMenuId() == null ? other.getMenuId() == null : this.getMenuId().equals(other.getMenuId()))
-            && (this.getMenuTitle() == null ? other.getMenuTitle() == null : this.getMenuTitle().equals(other.getMenuTitle()))
-            && (this.getMenuName() == null ? other.getMenuName() == null : this.getMenuName().equals(other.getMenuName()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
-            && (this.getMenuSort() == null ? other.getMenuSort() == null : this.getMenuSort().equals(other.getMenuSort()))
-            && (this.getPath() == null ? other.getPath() == null : this.getPath().equals(other.getPath()))
-            && (this.getComponent() == null ? other.getComponent() == null : this.getComponent().equals(other.getComponent()))
-            && (this.getRedirect() == null ? other.getRedirect() == null : this.getRedirect().equals(other.getRedirect()))
-            && (this.getIsFrame() == null ? other.getIsFrame() == null : this.getIsFrame().equals(other.getIsFrame()))
-            && (this.getMenuType() == null ? other.getMenuType() == null : this.getMenuType().equals(other.getMenuType()))
-            && (this.getVisible() == null ? other.getVisible() == null : this.getVisible().equals(other.getVisible()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getSymbol() == null ? other.getSymbol() == null : this.getSymbol().equals(other.getSymbol()))
-            && (this.getIcon() == null ? other.getIcon() == null : this.getIcon().equals(other.getIcon()));
+                && (this.getMenuTitle() == null ? other.getMenuTitle() == null : this.getMenuTitle().equals(other.getMenuTitle()))
+                && (this.getMenuName() == null ? other.getMenuName() == null : this.getMenuName().equals(other.getMenuName()))
+                && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
+                && (this.getMenuSort() == null ? other.getMenuSort() == null : this.getMenuSort().equals(other.getMenuSort()))
+                && (this.getPath() == null ? other.getPath() == null : this.getPath().equals(other.getPath()))
+                && (this.getComponent() == null ? other.getComponent() == null : this.getComponent().equals(other.getComponent()))
+                && (this.getRedirect() == null ? other.getRedirect() == null : this.getRedirect().equals(other.getRedirect()))
+                && (this.getIsFrame() == null ? other.getIsFrame() == null : this.getIsFrame().equals(other.getIsFrame()))
+                && (this.getMenuType() == null ? other.getMenuType() == null : this.getMenuType().equals(other.getMenuType()))
+                && (this.getVisible() == null ? other.getVisible() == null : this.getVisible().equals(other.getVisible()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getSymbol() == null ? other.getSymbol() == null : this.getSymbol().equals(other.getSymbol()))
+                && (this.getIcon() == null ? other.getIcon() == null : this.getIcon().equals(other.getIcon()));
     }
 
     @Override

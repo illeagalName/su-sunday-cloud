@@ -100,6 +100,9 @@ public class UserServiceImpl implements UserService {
 
         List<MenuVO> result = new ArrayList<>();
         menus.forEach(item -> {
+            if (!item.getVisible()){
+                return;
+            }
             MenuVO vo = new MenuVO();
             vo.setPath(item.getPath());
             vo.setComponent(item.getComponent());
@@ -115,6 +118,9 @@ public class UserServiceImpl implements UserService {
                 result.add(vo);
             } else {
                 MenuVO routeVO = temp.get(parentId);
+                if (Objects.isNull(routeVO)){
+                    return;
+                }
                 routeVO.getChildren().add(vo);
             }
             temp.put(item.getMenuId(), vo);

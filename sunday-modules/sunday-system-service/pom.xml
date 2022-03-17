@@ -60,10 +60,10 @@
             <groupId>com.haier</groupId>
             <artifactId>sunday-minio</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.haier</groupId>
-            <artifactId>sunday-elasticsearch</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.haier</groupId>-->
+<!--            <artifactId>sunday-elasticsearch</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 </project>

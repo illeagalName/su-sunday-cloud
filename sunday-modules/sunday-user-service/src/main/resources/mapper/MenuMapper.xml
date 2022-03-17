@@ -15,7 +15,7 @@
             <result property="redirect" column="redirect" jdbcType="VARCHAR"/>
             <result property="isFrame" column="is_frame" jdbcType="TINYINT"/>
             <result property="menuType" column="menu_type" jdbcType="CHAR"/>
-            <result property="visible" column="visible" jdbcType="TINYINT"/>
+            <result property="visible" column="visible" jdbcType="BOOLEAN"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="symbol" column="symbol" jdbcType="VARCHAR"/>
             <result property="icon" column="icon" jdbcType="VARCHAR"/>
