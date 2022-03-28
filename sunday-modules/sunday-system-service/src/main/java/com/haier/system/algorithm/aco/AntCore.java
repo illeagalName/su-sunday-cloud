@@ -1,5 +1,7 @@
 package com.haier.system.algorithm.aco;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,9 +89,11 @@ public class AntCore {
         this.beta = beta;
         this.rho = rho;
         this.Q = Q;
+        this.ants = new Ant[antNum];
         // 初始化 蚁群
-
+        initAntGroup();
     }
+
 
     private void initAntGroup() {
         // 初始化最佳路径长度为最大
@@ -100,9 +104,14 @@ public class AntCore {
         double pheromone0 = calInitPheromone();
 
         // 初始化信息素
+        pheromone = new double[cityNum][cityNum];
         for (int i = 0; i < cityNum; i++) {
             for (int j = 0; j < cityNum; j++) {
-                pheromone[i][j] = pheromone0;
+                if (i == j) {
+                    pheromone[i][j] = 0;
+                } else {
+                    pheromone[i][j] = pheromone0;
+                }
             }
         }
         // 初始化每一个蚂蚁
@@ -144,25 +153,51 @@ public class AntCore {
     /**
      * 迭代
      */
-    public void iteration(){
+    public Pair<Integer, List<Integer>> iteration() {
         for (int iter = 0; iter < iterMax; iter++) {
             // 每一个蚂蚁开始寻找路径
             for (int i = 0; i < antNum; i++) {
-                for (int j = 0; j < cityNum; j++) {
+                // 初始化的时候已经选择了一个城市，这次循环次数 cityNum-1
+                for (int j = 0; j < cityNum - 1; j++) {
                     // 可以多线程并行行走
                     ants[i].selectNextCity(pheromone);
                 }
-                // 每一只蚂蚁遍历完所有的城市 需要将 起始城市 添加上，形成首尾相映
-                ants[i].getTabu().add(ants[i].getFirstCity());
+                // 每一只蚂蚁遍历完所有的城市 需要将 起始城市 添加上，形成首尾相映，tabu个数为cityNum+1
+                List<Integer> tabu = ants[i].getTabu();
+                tabu.add(ants[i].getFirstCity());
                 int tourLength = ants[i].calculateTourLength();
-                if (tourLength < bestPathLength){
+                if (tourLength < bestPathLength) {
+                    // 寻找最近长度和最佳路径
                     bestPathLength = tourLength;
-                    bestPath = new ArrayList<>(ants[i].getTabu());
+                    bestPath = new ArrayList<>(tabu);
                 }
 
                 // 计算当前这只蚂蚁的信息素变化矩阵
-                
+                for (int j = 0; j < cityNum; j++) {
+                    // 每只蚂蚁走过的每相邻城市之间留下的信息素
+                    double v = Q / tourLength;
+                    double[][] delta = ants[i].getDelta();
+                    delta[tabu.get(j)][tabu.get(j + 1)] = v;
+                    delta[tabu.get(j + 1)][tabu.get(j)] = v;
+                }
+            }
+
+            // 更新整个信息素矩阵
+            // ① 挥发
+            for (int i = 0; i < cityNum; i++) {
+                for (int j = 0; j < cityNum; j++) {
+                    pheromone[i][j] = pheromone[i][j] * (1 - rho);
+                }
+            }
+            // ②留下
+            for (int i = 0; i < cityNum; i++) {
+                for (int j = 0; j < cityNum; j++) {
+                    for (int k = 0; k < antNum; k++) {
+                        pheromone[i][j] += ants[k].getDelta()[i][j];
+                    }
+                }
             }
         }
+        return Pair.of(bestPathLength, bestPath);
     }
 }

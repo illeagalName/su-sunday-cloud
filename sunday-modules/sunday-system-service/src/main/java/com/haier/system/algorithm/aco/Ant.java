@@ -65,7 +65,7 @@ public class Ant {
         tabu = new ArrayList<>();
         // 初始化允许城市
         allow = IntStream.range(0, cityNum).boxed().collect(Collectors.toList());
-        // 初始化信息素变化矩阵
+        // 初始化信息素变化矩阵 全部为0
         for (int i = 0; i < cityNum; i++) {
             for (int j = 0; j < cityNum; j++) {
                 delta[i][j] = 0;
@@ -73,9 +73,11 @@ public class Ant {
         }
 
         // 随机选一个城市,这里是第一个访问的城市
-        Integer nextCity = ThreadLocalRandom.current().nextInt(cityNum);
+//        firstCity = ThreadLocalRandom.current().nextInt(cityNum);
+        // 固定第一个城市为0
+        firstCity = 0;
         // 记录起始城市
-        firstCity = nextCity;
+        nextCity = firstCity;
         allow.remove(nextCity);
         tabu.add(nextCity);
     }
