@@ -197,6 +197,11 @@ public class AntCore {
                     }
                 }
             }
+
+            // 重新初始化蚁群
+            for (int i = 0; i < antNum; i++) {
+                ants[i] = new Ant(alpha, beta, cityNum, distance);
+            }
         }
         return Pair.of(bestPathLength, bestPath);
     }
